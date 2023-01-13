@@ -12,14 +12,14 @@ Each of spiking file contains 5 variables:
 The stimulus types are labeled as:  
 1 - CT0  
 2 - CT10  
-3 - CT20  
-4 - CT40
-5 - CT5
-6 - F0MaskHigh
-7 - F0MaskLow
-8 - allHarm
-9 - alt
-10 - high
-11 - low
-12 - rand
-13 - tone
+3 - CT20    
+4 - CT40   
+5 - CT5   
+6 - F0MaskHigh    
+7 - F0MaskLow    
+8 - allHarm    
+9 - alt    
+10 - high   
+11 - low   
+12 - rand   
+13 - tone    
