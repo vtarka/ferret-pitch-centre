@@ -1,7 +1,7 @@
 
 %% Determine the best frequency for each condition for every unit
 % BF defined as the F0 that evokes the largest mean spike rate
-
+% AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, November 2022
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
     'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
@@ -83,4 +83,3 @@ for ap = 1:length(Animals)
     % 'Y','type','F0','sensitivity','BFs')
 
 end % ends loop through recordings
-
