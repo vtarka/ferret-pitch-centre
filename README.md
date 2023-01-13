@@ -9,10 +9,10 @@ Each of spiking file contains 5 variables:
     sensitivity - nUnits x 13 matrix, each index labels whether the unit was determined to be frequency sensitive to that particular stimulus type (1 is yes), sensitivity(1,:) is the labelling for the first unit in unique(Y(:,3)) and so on...
     BFs - nUnits x 13 matrix, each index labels which F0 evoked the maximum firing rate in the averaged tuning curve for that particular stimulus type, an entry of 0 means the unit wasn't frequency-sensitive to that stimulus type. If BFs(1,13) = 7, that means the 1st unit in unique(Y(:,3)) had maximum firing at the 7th entry in unique(F0) in response to pure tones.
 
-The stimulus types are labeled as:
-1 - CT0
-2 - CT10
-3 - CT20
+The stimulus types are labeled as:  
+1 - CT0  
+2 - CT10  
+3 - CT20  
 4 - CT40
 5 - CT5
 6 - F0MaskHigh
