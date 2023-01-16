@@ -15,7 +15,7 @@ Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
 
 Qualia = 'Good';
 
-rho_threshold = 0.4;
+rho_threshold = 0.5;
 plot_yn = 'y'; % y = include plots of the unit's tuning, n = skip the plots
 
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
@@ -195,8 +195,8 @@ for ap = 1:length(Animals)
     
                 if strcmp(plot_yn,'y')
     
-                    stim_to_plot = {'high','low','CT0','tone'};
-                    BFs_to_plot = BFs(uu,[10 11 1 13]);
+                    stim_to_plot = {'high','low','CT0'};
+                    BFs_to_plot = BFs(uu,[10 11 1]);
                     plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{ap},Pens{ap});
     
                     pause
