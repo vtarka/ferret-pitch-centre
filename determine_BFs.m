@@ -74,6 +74,11 @@ for ap = 1:length(Animals)
                 [~,i] = max(meanSpikes); % find the index where the maximum spike rate occurs
                 BFs(uu,ss) = i; % save the index of the best frequency
 
+                plot(1:17,zscore(meanSpikes))
+                peaks = count_peaks(meanSpikes,0.75);
+                title(peaks)
+                pause
+
             end % ends if case
         end % ends loop through stims
     end % ends loop through units
