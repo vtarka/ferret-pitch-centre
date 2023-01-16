@@ -16,7 +16,7 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen)
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     window = [0 0.15];
-    colors = colormap(jet(length(stims))); % make the colormap to be used later
+    colors = colormap(hsv(length(stims))); % make the colormap to be used later
     
     figure('Position',[1900 500 1800 1200])
 
@@ -68,10 +68,12 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen)
         xticklabels(num2str(Flist))
         xlabel('F0')
         ylabel('Evoked Firing Rate (spike/sec)'); % y axis label is the firing rate
-        set(gca,'fontsize',16)
+        set(gca,'fontsize',22)
         axis tight
 
     end
+
+    legend(stims)
     
     return
 end
