@@ -7,6 +7,7 @@ load('HN_units.mat')
 %% First plot all of them
 
 figure('Position',[1900 500 1800 1200])
+stims = {'high','low','CT0','tone'};
 colors = colormap(hsv(length(stims))); % make the colormap to be used later
 sp = 0;
 
@@ -15,7 +16,7 @@ for pen = 1:length(HN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
-    stims = {'high','low','CT0'};
+    stims = {'high','low','CT0','tone'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
@@ -93,6 +94,7 @@ for pen = 1:length(HN_units)
 
 
         end % ends stim loop
+
     end % ends unit loop
 end % ends recording loop
 
