@@ -156,4 +156,4 @@ for pen = 1:length(HN_units)
 
 end
 
-figure; hist(BF_diffs)
+figure
