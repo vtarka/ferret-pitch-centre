@@ -156,21 +156,23 @@ for pen = 1:length(HN_units)
 
 end
 
-figure; hist(BF_diffs)
+figure; histogram(BF_diffs)
 
 
 %% Evaluate the peakedness
 
 figure('Position',[1900 500 1800 1200])
-stims = {'low','CT0'};
+stims = {'low'};
 colors = colormap(hsv(length(stims))); % make the colormap to be used later
+
+peak_counts = [];
+peak_diffs = [];
 
 % for each penetration
 for pen = 1:length(HN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
-    stims = {'high','low','CT0'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
@@ -179,8 +181,6 @@ for pen = 1:length(HN_units)
 
     HNUnits = HN_units{pen,3}; % array of units we found to be harmonicity neurons
     [~,HNUnit_IDXs] = ismember(HNUnits,allUnits); % find the indices of these pitch neurons within the list of all units
-
-    HN_BFs = BFs(HNUnit_IDXs,13); % get the PN's best frequencies
 
     for hn = 1:length(HNUnits)
 
@@ -217,14 +217,17 @@ for pen = 1:length(HN_units)
 
             [nPeaks, peak_idx] = count_peaks(meanSpikes,0.75);
 
-            plot(1:17,meanSpikes,'LineWidth',3)
-            hold on
+            peak_counts = [peak_counts ; nPeaks];
+            peak_diffs = [peak_diffs; diff(peak_idx)];
 
-            for peak = 1:length(peak_idx)
-                scatter(peak_idx(peak),meanSpikes(peak_idx(peak)),200,'filled')
-            end
-
-            pause
+%             plot(1:17,meanSpikes,'LineWidth',3)
+%             hold on
+% 
+%             for peak = 1:length(peak_idx)
+%                 scatter(peak_idx(peak),meanSpikes(peak_idx(peak)),200,'filled')
+%             end
+% 
+%             pause
 
         end
     end
