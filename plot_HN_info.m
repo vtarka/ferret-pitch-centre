@@ -157,3 +157,76 @@ for pen = 1:length(HN_units)
 end
 
 figure; hist(BF_diffs)
+
+
+%% Evaluate the peakedness
+
+figure('Position',[1900 500 1800 1200])
+stims = {'low','CT0'};
+colors = colormap(hsv(length(stims))); % make the colormap to be used later
+
+% for each penetration
+for pen = 1:length(HN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'high','low','CT0'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    window = [0 0.15]; % response window
+
+    HNUnits = HN_units{pen,3}; % array of units we found to be harmonicity neurons
+    [~,HNUnit_IDXs] = ismember(HNUnits,allUnits); % find the indices of these pitch neurons within the list of all units
+
+    HN_BFs = BFs(HNUnit_IDXs,13); % get the PN's best frequencies
+
+    for hn = 1:length(HNUnits)
+
+        unit = HNUnits(hn);
+
+        unitSpikes = Y(Y(:,3)==unit,:); % get spikes for just this unit
+    
+        % go through each stim we want to plot
+        for ss = 1:length(stims)
+    
+            nSpikes = zeros(length(repeats),length(Flist)); % allocate space to save spiking info for each trial
+                
+            for ff = 1:length(Flist) % for each frequency
+        
+                stimNum = find(strcmp(type,stims{ss}) & (F0==Flist(ff))); % unique name for combination of stim type and F0
+    
+                if isempty(stimNum) % if this stim type and fo combo wasn't presented
+                    nSpikes(:,ff) = 0;
+                    continue
+                end
+        
+                % for each trial of this stim type
+                for rr = 1:length(repeats)
+                
+                    spikeIDXs = unitSpikes(:,4)==stimNum & unitSpikes(:,5)==repeats(rr) & unitSpikes(:,2)>window(1) & unitSpikes(:,2)<window(2);
+                    nSpikes(rr,ff) = sum(spikeIDXs);
+    
+                end   
+            end
+    
+            clf
+            nSpikes = nSpikes ./ diff(window); % spikes per second
+            meanSpikes = mean(nSpikes); % average across repeats
+
+            [nPeaks, peak_idx] = count_peaks(meanSpikes,0.75);
+
+            plot(1:17,meanSpikes,'LineWidth',3)
+            hold on
+
+            for peak = 1:length(peak_idx)
+                scatter(peak_idx(peak),meanSpikes(peak_idx(peak)),200,'filled')
+            end
+
+            pause
+
+        end
+    end
+end
+

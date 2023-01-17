@@ -15,6 +15,8 @@ adjusted_thresh = max_val * threshold;
 
 nPeaks = 0;
 open = 0;
+open_idx = 0;
+peak_idxs = [];
 
 %% TODO: implement an indexes method so that the middle of a multi-value peak is returned
 
@@ -24,25 +26,28 @@ for i = 1:length(tuning_curve)
 
         if i == 1
             if tuning_curve(i+1) < adjusted_thresh
+                peak_idxs = [peak_idxs; i];
                 nPeaks = nPeaks + 1;
             else
                 open = 1;
+                open_idx = i;
             end
         elseif i == length(tuning_curve)
+            peak_idxs = [peak_idxs; i];
             nPeaks = nPeaks + 1;
         elseif tuning_curve(i-1) < adjusted_thresh && tuning_curve(i+1) < adjusted_thresh
+            peak_idxs = [peak_idxs; i];
             nPeaks = nPeaks + 1;
         elseif tuning_curve(i-1) < adjusted_thresh
             open = 1;
+            open_idx = i;
         elseif tuning_curve(i+1) < adjusted_thresh && open == 1
             nPeaks = nPeaks + 1;
+            [~,peak_within] = max(tuning_curve(open_idx:i));
+            peak_idxs = [peak_idxs; open_idx + peak_within - 1];
             open = 0;
         end
 
     end
 end
-
-peak_idxs = 0;
-
-return
 end
