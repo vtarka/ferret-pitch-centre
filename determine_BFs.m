@@ -16,9 +16,11 @@ Qualia = 'Good';
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %             1       2          3         4        5             6          7                 8           9          10       11       12        13
 
+not_f0_sensitive = 0;
+
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type); 
     Flist = unique(F0);
@@ -34,7 +36,8 @@ for ap = 1:length(Animals)
 
         % if this unit was not frequency sensitive to any stim-type, skip it
         if isempty(find(sensitivity(uu,:), 1))
-            sprintf('%s, %s, unit %d does not have any frequency selective neurons.',Animals{ap},Pens{ap},units(uu))
+%             sprintf('%s, %s, unit %d does not have any frequency selective neurons.',Animals{ap},Pens{ap},units(uu))  
+            not_f0_sensitive = not_f0_sensitive + 1;
             continue
         end
 
@@ -74,17 +77,12 @@ for ap = 1:length(Animals)
                 [~,i] = max(meanSpikes); % find the index where the maximum spike rate occurs
                 BFs(uu,ss) = i; % save the index of the best frequency
 
-                plot(1:17,zscore(meanSpikes))
-                peaks = count_peaks(meanSpikes,0.75);
-                title(peaks)
-                pause
-
             end % ends if case
         end % ends loop through stims
     end % ends loop through units
 
     % UNCOMMENT BELOW TO SAVE THE BEST FREQUENCY VARIABLE IN THE SPIKING FILE
-    % save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
-    % 'Y','type','F0','sensitivity','BFs')
+    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+        'Y','type','F0','sensitivity','BFs')
 
 end % ends loop through recordings

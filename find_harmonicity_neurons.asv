@@ -27,6 +27,10 @@ HN_units = cell(length(Animals),3); % allocate space to save the units we find a
 % for each recording
 for ap = 1:length(Animals)
 
+    if ap < 10
+        continue
+    end
+
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);

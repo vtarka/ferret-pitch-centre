@@ -15,7 +15,7 @@ Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
 
 Qualia = 'Good';
 
-p_threshold = 0.05; % significance threshold for unit to be considered F0-sensitive
+p_threshold = 0.01; % significance threshold for unit to be considered F0-sensitive
 plot_yn = 'n'; % y = include plots of every stimulus the unit is F0-sensitive to, n = skip the plots
 
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
@@ -102,7 +102,7 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % UNCOMMENT BELOW TO SAVE THE SENSITIVITY VARIABLE IN THE SPIKING FILE
-    %save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
-     %   'Y','type','F0','sensitivity')
+    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+       'Y','type','F0','sensitivity')
 
 end % ends the file-loading loop
