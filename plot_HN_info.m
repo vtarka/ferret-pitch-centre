@@ -162,7 +162,7 @@ figure; histogram(BF_diffs)
 %% Evaluate the peakedness
 
 figure('Position',[1900 500 1800 1200])
-stims = {'low'};
+stims = {'CT0'};
 colors = colormap(hsv(length(stims))); % make the colormap to be used later
 
 peak_counts = [];

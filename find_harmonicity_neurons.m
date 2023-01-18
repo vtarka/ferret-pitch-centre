@@ -16,13 +16,14 @@ Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
 Qualia = 'Good';
 
 rho_threshold = -1;
-plot_yn = 'y'; % y = include plots of the unit's tuning, n = skip the plots
+plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %             1       2          3         4        5             6          7                 8           9          10       11       12        13
 
 totalHN_count = 0;
 HN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
+rhos = [];
 
 % for each recording
 for ap = 1:length(Animals)
@@ -80,6 +81,7 @@ for ap = 1:length(Animals)
     
             % now evaluate the correlation
             rho = corr(tuning(1,:)',tuning(2,:)');
+            rhos = [rhos; rho];
 
             if rho>rho_threshold
                 totalHN_count = totalHN_count + 1;
