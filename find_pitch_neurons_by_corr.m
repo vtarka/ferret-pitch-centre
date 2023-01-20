@@ -1,9 +1,6 @@
 
-%% Find harmonicity neurons using a few different definitions
+%% Look for pitch neurons as defined by a strong correlation between pure tone tuning and allHarm tuning
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, January 2023
-
-%% Find HNs by defining them as neurons F0-sensitive to low harm and CT0 but not high harm
-% low and CT0 tuning must also be correlated with rho > rho_threshold
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
     'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
@@ -21,8 +18,9 @@ plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %             1       2          3         4        5             6          7                 8           9          10       11       12        13
 
-totalHN_count = 0;
-HN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
+totalPN_count = 0;
+test = 0;
+PN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 rhos = [];
 
 % for each recording
@@ -35,16 +33,18 @@ for ap = 1:length(Animals)
     repeats = unique(Y(:,5));
     units = unique(Y(:,3));
 
-    stims_to_plot = {'CT0','low'};
+    stims_to_plot = {'allHarm','tone'};
 
     window = [0 0.15]; % response window
 
-    HN_unit_list = []; % to keep track of HNs we find
+    PN_unit_list = []; % to keep track of HNs we find
     for uu = 1:length(units) % for each unit
         unit = units(uu);
 
         % if the unit is F0-sensitive to CT0 and low, but not to high, look at its correlation
-        if sensitivity(uu,1)==1 && sensitivity(uu,10)==0 && sensitivity(uu,11)==1
+        if sensitivity(uu,8)==1 && sensitivity(uu,13)==1
+
+            test = test + 1;
 
             unitSpikes = Y(Y(:,3)==unit,:); % get the spikes of just this unit
 
@@ -84,13 +84,13 @@ for ap = 1:length(Animals)
             rhos = [rhos; rho];
 
             if rho>rho_threshold
-                totalHN_count = totalHN_count + 1;
-                HN_unit_list = [HN_unit_list, unit];
+                totalPN_count = totalPN_count + 1;
+                PN_unit_list = [PN_unit_list, unit];
     
                 if strcmp(plot_yn,'y')
     
-                    stim_to_plot = {'high','low','CT0'};
-                    BFs_to_plot = BFs(uu,[10 11 1]);
+                    stim_to_plot = {'allHarm','tone'};
+                    BFs_to_plot = BFs(uu,[8 13]);
                     plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{ap},Pens{ap});
     
                     pause
@@ -101,16 +101,14 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % save all the units we found for this penetration
-    HN_units{ap,1} = Animals{ap};
-    HN_units{ap,2} = Pens{ap};
-    HN_units{ap,3} = HN_unit_list;
+    PN_units{ap,1} = Animals{ap};
+    PN_units{ap,2} = Pens{ap};
+    PN_units{ap,3} = PN_unit_list;
 
 end % ends recording loop
 
 
-
-%% Find HNs by defining them as neurons with high correlation between low and CTO and poor corr between high & CTO / high & low
-
+%% Define it as a good correlation between low, high, and CT0
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
     'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
@@ -122,15 +120,17 @@ Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
 
 Qualia = 'Good';
 
-rho_threshold_good = 0.4;
-rho_threshold_bad = 0;
-plot_yn = 'y'; % y = include plots of the unit's tuning, n = skip the plots
+rho_threshold = -1;
+plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %             1       2          3         4        5             6          7                 8           9          10       11       12        13
 
-totalHN_count = 0;
-HN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
+totalPN_count = 0;
+test = 0;
+PN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
+rhos_low = [];
+rhos_high = [];
 
 % for each recording
 for ap = 1:length(Animals)
@@ -142,16 +142,18 @@ for ap = 1:length(Animals)
     repeats = unique(Y(:,5));
     units = unique(Y(:,3));
 
-    stims_to_plot = {'CT0','low','high'};
+    stims_to_plot = {'low','high','CT0'};
 
     window = [0 0.15]; % response window
 
-    HN_unit_list = []; % to keep track of HNs we find
+    PN_unit_list = []; % to keep track of HNs we find
     for uu = 1:length(units) % for each unit
         unit = units(uu);
 
-        % if the unit is F0-sensitive to CT0 and low, look at the correlation
-        if sensitivity(uu,1)==1 && sensitivity(uu,11)==1
+        % if the unit is F0-sensitive to CT0 and low, but not to high, look at its correlation
+        if sensitivity(uu,1)==1 && sensitivity(uu,10)==1 && sensitivity(uu,11)==1
+
+            test = test + 1;
 
             unitSpikes = Y(Y(:,3)==unit,:); % get the spikes of just this unit
 
@@ -187,18 +189,20 @@ for ap = 1:length(Animals)
             end % end stim loop
     
             % now evaluate the correlation
-            rho_low_CT0 = corr(tuning(1,:)',tuning(2,:)');
-            rho_low_high = corr(tuning(1,:)',tuning(3,:)');
-            rho_CT0_high = corr(tuning(2,:)',tuning(3,:)');
+            rho_low = corr(tuning(1,:)',tuning(3,:)');
+            rhos_low = [rhos_low; rho_low];
 
-            if rho_low_CT0>rho_threshold_good && mean([rho_low_high rho_CT0_high])<rho_threshold_bad
-                totalHN_count = totalHN_count + 1;
-                HN_unit_list = [HN_unit_list, unit];
+            rho_high = corr(tuning(2,:)',tuning(3,:)');
+            rhos_high = [rhos_high; rho_high];
+
+            if rho_low>rho_threshold && rho_high>rho_threshold
+                totalPN_count = totalPN_count + 1;
+                PN_unit_list = [PN_unit_list, unit];
     
                 if strcmp(plot_yn,'y')
     
-                    stim_to_plot = {'high','low','CT0'};
-                    BFs_to_plot = BFs(uu,[10 11 1]);
+                    stim_to_plot = {'low','high','CT0'};
+                    BFs_to_plot = BFs(uu,[11 10 1]);
                     plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{ap},Pens{ap});
     
                     pause
@@ -209,8 +213,8 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % save all the units we found for this penetration
-    HN_units{ap,1} = Animals{ap};
-    HN_units{ap,2} = Pens{ap};
-    HN_units{ap,3} = HN_unit_list;
+    PN_units{ap,1} = Animals{ap};
+    PN_units{ap,2} = Pens{ap};
+    PN_units{ap,3} = PN_unit_list;
 
 end % ends recording loop
