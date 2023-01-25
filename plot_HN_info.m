@@ -131,32 +131,37 @@ xlim([1 20])
 
 %% Next evaluate the differences in best frequency differences between CT0 and low harmonics
 
-BF_diffs = [];
+HN_BF_diffs= [];
 
 % for each penetration
 for pen = 1:length(HN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
-    stims = {'high','low','CT0'};
-    Flist = unique(F0);
-    repeats = unique(Y(:,5));
+%     stims = {'high','low','CT0'};
+%     Flist = unique(F0);
+%     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
 
-    window = [0 0.15]; % response window
+%     window = [0 0.15]; % response window
 
     HNUnits = HN_units{pen,3}; % array of units we found to be harmonicity neurons
     [~,HNUnit_IDXs] = ismember(HNUnits,allUnits); % find the indices of these pitch neurons within the list of all units
 
-    HN_BFs = BFs(HNUnit_IDXs,:); % get the PN's best frequencies
+    HN_BFs = BFs(HNUnit_IDXs,:);
 
     for hn = 1:length(HNUnits)
-        BF_diffs = [BF_diffs; abs(HN_BFs(hn,1)-HN_BFs(hn,11))];
+        HN_BF_diffs = [HN_BF_diffs; abs(HN_BFs(hn,1)-HN_BFs(hn,11))];
     end
 
 end
 
-figure; histogram(BF_diffs)
+figure; histogram(HN_BF_diffs); hold on
+histogram(nHN_BF_diffs)
+
+
+
+
 
 
 %% Evaluate the peakedness
