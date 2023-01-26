@@ -4,7 +4,7 @@
 
 
 figure('Position',[1900 500 1800 1200])
-stims = {'high','low','CT0'};
+stims = {'low','CT0'};
 colors = colormap(hsv(length(stims))); % make the colormap to be used later
 sp = 0;
 
@@ -27,12 +27,29 @@ for pen = 1:length(HN_units)
 
     for hn = 1:length(HNUnits)
         
-        [bsCorr, bs5, bs95] = bootstrap_corr(Y,type,F0,stims,HNUnits(hn));
+        [r, n5, n95] = bootstrap_corr(Y,type,F0,stims,HNUnits(hn));
 
         plot_tuning_by_cond(Y,type,F0,HNUnits(hn),stims,HN_BFs(hn,[11 1]),HN_units{pen,1},HN_units{pen,2});
         sgtitle('');
-        title(sprintf('RHO: %.2f, [5 95]: [%.2f  %.2f]',bsCorr,bs5,bs95))
+        title(sprintf('RHO: %.2f, [5 95]: [%.2f  %.2f]',r,n5,n95))
         pause
     end
 
 end
+
+
+
+%%
+
+% load('all_unit_corrs.mat')
+
+all_corrs = [];
+
+for ap = 1:length(unit_corrs)
+    all_corrs = [all_corrs; unit_corrs{ap,3}];
+end
+
+all_corrs_vec = reshape(all_corrs,[],1);
+all_corrs_vec(all_corrs_vec==0) = [];
+
+figure; histogram(all_corrs_vec)

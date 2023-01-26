@@ -12,11 +12,13 @@ end
 repeats = unique(Y(:,5));
 nRepeats = length(repeats);
 Flist = unique(F0);
-window = [0 0.08];
+window = [0 0.1];
 
 s1_s2_trials = zeros(2,nRepeats,length(Flist));
 
 unitSpikes = Y(Y(:,3)==unit,:); % get the spikes of just this unit
+
+tuning = zeros(2,17);
 
 % for each stim
 for ss = 1:length(stims)
@@ -39,14 +41,22 @@ for ss = 1:length(stims)
             spikeIDXs = unitSpikes(:,4)==stimNum & unitSpikes(:,5)==repeats(rr) & unitSpikes(:,2)>window(1) & unitSpikes(:,2)<window(2);
             nSpikes(rr,ff) = sum(spikeIDXs);
 
-            s1_s2_trials(ss,rr,ff) = sum(spikeIDXs)/diff(window);
+            s1_s2_trials(ss,rr,ff) = sum(spikeIDXs);%/diff(window);
         end   
     end % ends F0 loop
+
+    tuning(ss,:) = mean(s1_s2_trials(ss,:,:));
 
 end % end stim loop
 
 s1_trials = squeeze(s1_s2_trials(1,:,:));
 s2_trials = squeeze(s1_s2_trials(2,:,:));
+
+if strcmp('low',stims{1}) || strcmp('low',stims{2})
+    s1_trials(:,1:2) = [];
+    s2_trials(:,1:2) = [];
+    Flist(1:2) = [];
+end
 
 s1_rep = [];
 s2_rep = [];
@@ -62,24 +72,43 @@ for f0 = 1:length(Flist)
 
 end
 
-figure; subplot(2,1,1); scatter(1:length(s1_rep),s1_rep,'filled')
-xticks(0:13*13:13*13*17)
-
-subplot(2,1,2); scatter(1:length(s2_rep),s2_rep,'filled')
-xticks(0:13*13:13*13*17)
-
 r = corr(s1_rep,s2_rep);
 
-null_perms = 10000;
+% figure('Position',[1900 500 1800 1200])
+% subplot(3,1,1); scatter(1:length(s1_rep),s1_rep,70,'MarkerFaceColor','k','MarkerFaceAlpha',0.2)
+% hold on; scatter(1:length(s2_rep),s2_rep,70,'MarkerFaceColor','r','MarkerFaceAlpha',0.2)
+% xticks(0:13*13:13*13*17)
+% title(r)
+% 
+% % subplot(2,1,2); scatter(1:length(s2_rep),s2_rep,'filled')
+% % xticks(0:13*13:13*13*17)
+% 
+% nonrep_s1 = reshape(s1_trials,[],1);
+% nonrep_s2 = reshape(s2_trials,[],1);
+% nrr = corr(nonrep_s1,nonrep_s2);
+% subplot(3,1,2)
+% scatter(1:length(nonrep_s1),nonrep_s1,70,'MarkerFaceColor','k','MarkerFaceAlpha',0.2)
+% hold on; scatter(1:length(nonrep_s2),nonrep_s2,70,'MarkerFaceColor','r','MarkerFaceAlpha',0.2)
+% title(nrr)
+% 
+% tr = corr(tuning(1,:)',tuning(2,:)');
+% subplot(3,1,3)
+% plot(tuning(1,:),'k')
+% hold on; plot(tuning(2,:),'r')
+% title(tr)
+% 
+% pause
+
+null_perms = 1000;
 null_rhos = zeros(null_perms,1);
 
 for p = 1:null_perms
 
-%     shuffled_s1 = s1_trials(randperm(m*n));
+% %     shuffled_s1 = s1_trials(randperm(m*n));
     shuffled_s2_rep = s2_rep(randperm(length(s2_rep)));
-
-%     ss1_vector = reshape(shuffled_s1,[],1);
-%     ss2_vector = reshape(shuffled_s2,[],1);
+% 
+% %     ss1_vector = reshape(shuffled_s1,[],1);
+% %     ss2_vector = reshape(shuffled_s2,[],1);
 
     null_rhos(p) = corr(s1_rep,shuffled_s2_rep);
 end
