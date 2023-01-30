@@ -5,3 +5,7 @@ veronica/
 plot_corr_comparison.m
 
 plot_corrs.m
+
+MIspikecountPitch_FullyConfounded_Nelken.m
+
+ResampleSpikeDataC.m
