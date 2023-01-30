@@ -1,3 +1,5 @@
+% AUTHOR: Kerry Walker
+
 function [MI,rMI,bMI,history]=MI2unbiased(h)
 
 if isempty(h)
