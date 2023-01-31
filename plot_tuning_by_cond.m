@@ -15,7 +15,7 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen)
 
     Flist = unique(F0);
     repeats = unique(Y(:,5));
-    window = [0 0.15];
+    window = [0 0.08];
     colors = colormap(hsv(length(stims))); % make the colormap to be used later
     
 %     figure('Position',[1900 500 1800 1200])

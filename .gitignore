@@ -1,3 +1,7 @@
 veronica/
 
 *.mat
+
+plot_corr_comparison.m
+
+plot_corrs.m
