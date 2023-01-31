@@ -97,7 +97,7 @@ for ap = 1:length(Animals)
                         freq_histc(ff,:) = histcounts(nSpikes(:,ff),[uniqueSpikeRates; max(uniqueSpikeRates)+1]);
                     end
     
-                    [~,rMI,bMI] = MI2unbiased(freq_histc);
+                    [MI,rMI,bMI] = MI2unbiased(freq_histc);
                     tMI = rMI - bMI;
                     [aa,bb]=max(tMI(1:end-1)); %find the MI and bias we used
                     MI_timecourses(ss,bin) = rMI(bb);
