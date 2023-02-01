@@ -24,7 +24,7 @@ totalHN_count = 0;
 unit_MIs  = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 rhos = [];
 
-bin_dur = 30; % bin duration in ms
+bin_dur = 20; % bin duration in ms
 time_bins = 0:bin_dur/2:500;
 
 % for each recording
@@ -96,6 +96,12 @@ for ap = 1:length(Animals)
                     for ff = 1:length(Flist)
                         freq_histc(ff,:) = histcounts(nSpikes(:,ff),[uniqueSpikeRates; max(uniqueSpikeRates)+1]);
                     end
+
+%                     freq_histc_combined = zeros(floor(length(Flist)/2),length(uniqueSpikeRates));
+%                     idx = 1:2:length(Flist)-1;
+%                     for ff = 1:length(idx)
+%                         freq_histc_combined(ff,:) = freq_histc(idx(ff),:)+freq_histc(idx(ff)+1,:);
+%                     end
     
                     [MI,rMI,bMI] = MI2unbiased(freq_histc);
                     tMI = rMI - bMI;

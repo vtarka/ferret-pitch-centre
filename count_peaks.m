@@ -9,7 +9,7 @@
 
 function [nPeaks, peak_idxs] = count_peaks(tuning_curve, threshold)
 
-max_val = max(tuning_curve);
+max_val = max(tuning_curve(1:7));
 
 adjusted_thresh = max_val * threshold;
 
