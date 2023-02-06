@@ -505,11 +505,15 @@ stimIDX = [1 4 8 13 11 10];
 colors = colormap(hsv(length(stims)));
 
 timebins = 0:15:500;
-peak_thresh = 0.85;
+peak_thresh = 0.8;
 
 peak_times = zeros(length(stims),2);
 err = zeros(length(stims),2);
 
+% highAAF = 9:20;
+% highAAF_N = 1:8;
+
+all_peak_times = cell(length(stims),1);
 
 %%%%%%%%%%%%%% high AAF %%%%%%%%%%%%%%%%%%%%%%
 for ss = 1:length(stims)
@@ -531,23 +535,16 @@ for ss = 1:length(stims)
 
         for uu = 1:size(stim_MIs,1)
             [nPeaks, peakIDX] = count_peaks(stim_MIs(uu,:),peak_thresh);
-%             clf;
-%             plot(stim_MIs(uu,:));
-%             hold on
-%             scatter(peakIDX,stim_MIs(uu,peakIDX),100)
-%             peakIDX
-%             a=1;
+            if nPeaks>1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
         end
-
     end
 
-    if nPeaks>1
-        tp1 = [tp1; timebins(peakIDX(1))];
-        tp2 = [tp2; timebins(peakIDX(2))];
-    else
-        tp1 = [tp1; timebins(peakIDX(1))];
-    end
-
+    
     for pen = highAAF_N
 
         load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' unit_MIs{pen,1} '/tmp/Spikes_' unit_MIs{pen,1} '_' unit_MIs{pen,2} '_Good_Pitch.mat']);
@@ -559,19 +556,22 @@ for ss = 1:length(stims)
         stim_MIs = squeeze(MIs(:,stimIDX(ss),:));
         stim_MIs(not_sensitive,:) = [];
         stim_MIs(:,14:20) = [];
+%         stim_MIs(:,21:31) = [];
 
         for uu = 1:size(stim_MIs,1)
             [nPeaks, peakIDX] = count_peaks(stim_MIs(uu,:),peak_thresh);
-        end
 
-        if nPeaks>1
-            tp1 = [tp1; timebins(peakIDX(1))];
-            tp2 = [tp2; timebins(peakIDX(2))];
-        else
-            tp1 = [tp1; timebins(peakIDX(1))];
+            if nPeaks > 1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
         end
         
     end
+
+    all_peak_times{ss} = tp1;
 
     peak_times(ss,1) = mean(tp1);
     peak_times(ss,2) = mean(tp2);
@@ -600,7 +600,7 @@ end
 
 title('High AAF')
 
-ylim([0 360])
+% ylim([0 360])
 yticks([0:100:360])
 set(gca,'Fontsize',24)
 xlabel('Peak')
@@ -635,16 +635,18 @@ for ss = 1:length(stims)
 %             scatter(peakIDX,stim_MIs(uu,peakIDX),100)
 %             peakIDX
 %             a=1;
+
+            if nPeaks>1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
         end
 
     end
 
-    if nPeaks>1
-        tp1 = [tp1; timebins(peakIDX(1))];
-        tp2 = [tp2; timebins(peakIDX(2))];
-    else
-        tp1 = [tp1; timebins(peakIDX(1))];
-    end
+
 
     for pen = highA1_N
 
@@ -660,15 +662,14 @@ for ss = 1:length(stims)
 
         for uu = 1:size(stim_MIs,1)
             [nPeaks, peakIDX] = count_peaks(stim_MIs(uu,:),peak_thresh);
-        end
 
-        if nPeaks>1
-            tp1 = [tp1; timebins(peakIDX(1))];
-            tp2 = [tp2; timebins(peakIDX(2))];
-        else
-            tp1 = [tp1; timebins(peakIDX(1))];
-        end
-        
+            if nPeaks>1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
+        end    
     end
 
     peak_times(ss,1) = mean(tp1);
@@ -698,7 +699,7 @@ end
 
 title('High A1')
 
-ylim([0 360])
+% ylim([0 360])
 yticks([0:100:360])
 set(gca,'Fontsize',24)
 xlabel('Peak')
@@ -735,16 +736,17 @@ for ss = 1:length(stims)
 %             scatter(peakIDX,stim_MIs(uu,peakIDX),100)
 %             peakIDX
 %             a=1;
+
+            if nPeaks>1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
         end
-
     end
 
-    if nPeaks>1
-        tp1 = [tp1; timebins(peakIDX(1))];
-        tp2 = [tp2; timebins(peakIDX(2))];
-    else
-        tp1 = [tp1; timebins(peakIDX(1))];
-    end
+
 
     for pen = lowAAF_N
 
@@ -760,14 +762,16 @@ for ss = 1:length(stims)
 
         for uu = 1:size(stim_MIs,1)
             [nPeaks, peakIDX] = count_peaks(stim_MIs(uu,:),peak_thresh);
+
+            if nPeaks>1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
         end
 
-        if nPeaks>1
-            tp1 = [tp1; timebins(peakIDX(1))];
-            tp2 = [tp2; timebins(peakIDX(2))];
-        else
-            tp1 = [tp1; timebins(peakIDX(1))];
-        end
+
         
     end
 
@@ -798,7 +802,7 @@ end
 
 title('Low AAF')
 
-ylim([0 360])
+% ylim([0 360])
 yticks([0:100:360])
 set(gca,'Fontsize',24)
 xlabel('Peak')
@@ -836,16 +840,18 @@ for ss = 1:length(stims)
 %             scatter(peakIDX,stim_MIs(uu,peakIDX),100)
 %             peakIDX
 %             a=1;
+
+            if nPeaks>1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
+
         end
 
     end
 
-    if nPeaks>1
-        tp1 = [tp1; timebins(peakIDX(1))];
-        tp2 = [tp2; timebins(peakIDX(2))];
-    else
-        tp1 = [tp1; timebins(peakIDX(1))];
-    end
 
     for pen = lowA1_N
 
@@ -861,15 +867,16 @@ for ss = 1:length(stims)
 
         for uu = 1:size(stim_MIs,1)
             [nPeaks, peakIDX] = count_peaks(stim_MIs(uu,:),peak_thresh);
+
+            if nPeaks>1
+                tp1 = [tp1; timebins(peakIDX(1))];
+                tp2 = [tp2; timebins(peakIDX(2))-200];
+            else
+                tp1 = [tp1; timebins(peakIDX(1))];
+            end
+        
         end
 
-        if nPeaks>1
-            tp1 = [tp1; timebins(peakIDX(1))];
-            tp2 = [tp2; timebins(peakIDX(2))];
-        else
-            tp1 = [tp1; timebins(peakIDX(1))];
-        end
-        
     end
 
     peak_times(ss,1) = mean(tp1);
@@ -897,7 +904,7 @@ for i = 1:nbars
     errorbar(x,peak_times(:,i),err(:,i),'k.');
 end
 
-ylim([0 360])
+% ylim([0 360])
 yticks([0:100:360])
 set(gca,'Fontsize',24)
 xlabel('Peak')
@@ -905,3 +912,58 @@ xlabel('Peak')
 
 title('Low A1')
 legend(stims,'location','northwest')
+
+
+%% Overlay all MI timecourses
+
+load('unit_MIs_20ms.mat')
+
+figure('Position',[1900 500 1800 1200])
+
+% stims = [1 10 11 13];
+% stim_names = {'CT0','high','low','tone'};
+
+stim_names = {'CT0','CT40','allHarm','tone','low','high'};
+stims = [1 4 8 13 11 10];
+
+
+for pen = 1:length(unit_MIs)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' unit_MIs{pen,1} '/tmp/Spikes_' unit_MIs{pen,1} '_' unit_MIs{pen,2} '_Good_Pitch.mat']);
+
+    allUnit_MI_tcs = unit_MIs{pen,3};
+
+    units = unique(Y(:,3));
+
+    for uu = 1:length(units)
+        unit = units(uu);
+
+        for ss = 1:length(stims)
+            stim = stims(ss);
+
+            if sensitivity(uu,stim)~=0
+                subplot(3,2,ss)
+                hold on
+                if strcmp(unit_MIs{pen,1},'Noah')
+                    MI_tcs = squeeze(allUnit_MI_tcs(uu,stim,:));
+                    MI_tcs(21:31) = [];
+                    plot(MI_tcs,'k')
+                else
+                    plot(squeeze(allUnit_MI_tcs(uu,stim,:)),'k')
+                end
+                axis tight
+                
+            end
+        end
+
+    end
+end
+
+for ss = 1:length(stims)
+    subplot(3,2,ss)
+    title(stim_names{ss})
+    ylim([0 0.7])
+    set(gca,'fontsize',22)
+%     xticks(0:5:30)
+%     xticklabels(0:75:500)
+end

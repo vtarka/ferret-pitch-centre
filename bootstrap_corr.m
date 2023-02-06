@@ -3,7 +3,7 @@
 % all possible pairings of trials 
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, January 2023
 
-function [r,null_5,null_95] = bootstrap_corr(Y,type,F0,stims,unit,window)
+function [r,null_5,null_95] = bootstrap_corr(Y,type,F0,stims,unit,window,null_shuffles)
 
     % INPUTS:
     % Y - n x 6 matrix where Y(:,)=spiketimes, Y(:,3)=unit spiking, Y(:,4)=stimulus, Y(:,5)=repeat, Y(:,6)=trial number
@@ -12,6 +12,7 @@ function [r,null_5,null_95] = bootstrap_corr(Y,type,F0,stims,unit,window)
     % unit - the unit we are evaluating the tuning of
     % stims - cell array of strings containing 2 stimuli names to be compared
     % window - vector length 2 containing the response window in seconds (eg [0 0.1])
+    % null_shuffles - how many times to shuffle the responses to create the null distributino
 
 if length(stims) ~= 2
     return
@@ -114,7 +115,7 @@ r = corr(s1_rep,s2_rep);
 % now create the null distribution by shuffling all the values of the 2nd
 % stimulus and correlating it with the first stimulus
 
-null_perms = 1000; % how many times to shuffle
+null_perms = null_shuffles; % how many times to shuffle
 null_rhos = zeros(null_perms,1);
 
 for p = 1:null_perms

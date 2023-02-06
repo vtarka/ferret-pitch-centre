@@ -1,5 +1,6 @@
 
 %% Find harmonicity neurons using a few different definitions
+% DEPENDENCIES: plot_tuning_by_cond.m (if plot_yn == 'y')
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, January 2023
 
 %% Find HNs by defining them as neurons F0-sensitive to low harm and CT0 but not high harm

@@ -1,4 +1,5 @@
 %% Function to plot tuning curves of specified stimuli for a single unit
+% DEPENDENCIES: shadedErrorBar.m
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, November 2022
 
 function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen)
