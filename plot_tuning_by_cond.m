@@ -2,7 +2,7 @@
 % DEPENDENCIES: shadedErrorBar.m
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, November 2022
 
-function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen)
+function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colors)
 
     % INPUTS:
     % Y - n x 6 matrix where Y(:,)=spiketimes, Y(:,3)=unit spiking, Y(:,4)=stimulus, Y(:,5)=repeat, Y(:,6)=trial number
@@ -16,10 +16,15 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen)
 
     Flist = unique(F0);
     repeats = unique(Y(:,5));
-    window = [0 0.08];
-    colors = colormap(hsv(length(stims))); % make the colormap to be used later
+    if ~exist('window','var')
+        window = [0 0.08];
+    end
+
+    if ~exist('colors','var')
+        colors = colormap(hsv(length(stims))); % make the colormap to be used later
+    end
     
-    figure('Position',[1900 500 1800 1200])
+%     figure('Position',[1900 500 1800 1200])
 
     sgtitle(sprintf('%s, %s unit # %d',animal,pen,unit)) % label the plot with the animal, penetration, and unit shown
 

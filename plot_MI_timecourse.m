@@ -916,7 +916,7 @@ legend(stims,'location','northwest')
 
 %% Overlay all MI timecourses
 
-load('unit_MIs_20ms.mat')
+load('all_unit_MIs_30ms.mat')
 
 figure('Position',[1900 500 1800 1200])
 
@@ -941,7 +941,7 @@ for pen = 1:length(unit_MIs)
         for ss = 1:length(stims)
             stim = stims(ss);
 
-            if sensitivity(uu,stim)~=0
+%             if sensitivity(uu,stim)~=0
                 subplot(3,2,ss)
                 hold on
                 if strcmp(unit_MIs{pen,1},'Noah')
@@ -953,7 +953,7 @@ for pen = 1:length(unit_MIs)
                 end
                 axis tight
                 
-            end
+%             end
         end
 
     end

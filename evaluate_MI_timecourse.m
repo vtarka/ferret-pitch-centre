@@ -22,11 +22,15 @@ plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 
 unit_MIs  = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 
-bin_dur = 30; % bin duration in ms
+bin_dur = 20; % bin duration in ms
 time_bins = 0:bin_dur/2:500;
 
 % for each recording
 for ap = 1:length(Animals)
+
+    if ap < 12
+        continue
+    end
 
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
