@@ -23,22 +23,22 @@ for pen = 1:length(unit_MIs)
             if MIs(uu,ss,1) ~= -1
                 [nPeaks, peakIDX] = count_peaks(MIs(uu,ss,:),0.8);
 
-                if peakIDX(1) < 9
-                    all_peaks(unit,ss,1) = 9 - peakIDX(1);
+                if peakIDX(1) < 12
+                    all_peaks(unit,ss,1) = peakIDX(1);
                 end
                 
                 if strcmp(unit_MIs{pen,1},'Noah')
                     if ~isempty(find(peakIDX > 21, 1))
-                        temp = peakIDX(peakIDX>21);
-                        if temp(1) < 28
-                            all_peaks(unit,ss,2) = 28 - temp(1);
+                        temp = peakIDX(peakIDX > 21);
+                        if temp(1) < 31
+                            all_peaks(unit,ss,2) = temp(1);
                         end
                     end
                 else
                     if ~isempty(find(peakIDX > 13, 1))
-                        temp = peakIDX(peakIDX>13);
-                        if temp(1) < 21
-                            all_peaks(unit,ss,2) = 21 - temp(1);
+                        temp = peakIDX(peakIDX > 13);
+                        if temp(1) < 24
+                            all_peaks(unit,ss,2) = temp(1);
                         end
                     end
                 end

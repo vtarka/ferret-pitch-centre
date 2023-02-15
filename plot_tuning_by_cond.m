@@ -24,7 +24,7 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
         colors = colormap(hsv(length(stims))); % make the colormap to be used later
     end
     
-%     figure('Position',[1900 500 1800 1200])
+    figure('Position',[1900 500 1800 1200])
 
     sgtitle(sprintf('%s, %s unit # %d',animal,pen,unit)) % label the plot with the animal, penetration, and unit shown
 

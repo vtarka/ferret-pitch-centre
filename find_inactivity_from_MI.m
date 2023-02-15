@@ -10,13 +10,13 @@ for pen = 1:length(unit_MIs)
 %     max_MIs = [max_MIs; squeeze(max(MI_tcs,[],3))];
 
     max_MIs = squeeze(max(MI_tcs,[],3));
-    active = max_MIs > 0.07;
+    active = max_MIs > 0.12;
 
     unit_MIs{pen,4} = active;
 
 end % ends recording loop
 
-save('all_unit_MIs_20ms_2.mat','unit_MIs')
+save('all_unit_MIs_30ms_2.mat','unit_MIs')
 
 % figure;
 % histogram(max_MIs)

@@ -1,4 +1,3 @@
-
 %% Script for evaluating the MI about pitch in the spike data as in Kerry's 2011 multiplexing paper
 % DEPENDENCIES: MI2unbiased.m
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, January 2023
@@ -27,10 +26,6 @@ time_bins = 0:bin_dur/2:500;
 
 % for each recording
 for ap = 1:length(Animals)
-
-    if ap < 12
-        continue
-    end
 
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
