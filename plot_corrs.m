@@ -1,12 +1,17 @@
 
 %% Quick plot to test out correlation assesment methods
+% DEPENDENCIES: plot_tuning_by_cond.m, bootstrap_corr.m
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, January 2023
 
+
+%% Plot correlation of harmonicity neurons
 
 figure('Position',[1900 500 1800 1200])
 stims = {'low','CT0'};
 colors = colormap(hsv(length(stims))); % make the colormap to be used later
 sp = 0;
+
+load('HN_units.mat')
 
 % for each penetration
 for pen = 1:length(HN_units)
@@ -15,10 +20,7 @@ for pen = 1:length(HN_units)
 
     stims = {'low','CT0'};
     Flist = unique(F0);
-%     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
-
-%     window = [0 0.15]; % response window
 
     HNUnits = HN_units{pen,3}; % array of units we found to be harmonicity neurons
     [~,HNUnit_IDXs] = ismember(HNUnits,allUnits); % find the indices of these pitch neurons within the list of all units
@@ -39,9 +41,9 @@ end
 
 
 
-%%
+%% Plot histogram of all correlation values attained using bootstrap approach
 
-% load('all_unit_corrs.mat')
+load('all_unit_corrs.mat')
 
 all_corrs = [];
 

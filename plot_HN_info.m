@@ -4,7 +4,7 @@
 
 load('HN_units.mat')
 
-%% First plot all of them
+%% First plot the tuning curves for the first 10 of them
 
 figure('Position',[1900 500 1800 1200])
 stims = {'high','low','CT0'};
@@ -138,12 +138,7 @@ for pen = 1:length(HN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
-%     stims = {'high','low','CT0'};
-%     Flist = unique(F0);
-%     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
-
-%     window = [0 0.15]; % response window
 
     HNUnits = HN_units{pen,3}; % array of units we found to be harmonicity neurons
     [~,HNUnit_IDXs] = ismember(HNUnits,allUnits); % find the indices of these pitch neurons within the list of all units
@@ -158,10 +153,6 @@ end
 
 figure; histogram(HN_BF_diffs); hold on
 histogram(nHN_BF_diffs)
-
-
-
-
 
 
 %% Evaluate the peakedness
@@ -224,15 +215,6 @@ for pen = 1:length(HN_units)
 
             peak_counts = [peak_counts ; nPeaks];
             peak_diffs = [peak_diffs; diff(peak_idx)];
-
-%             plot(1:17,meanSpikes,'LineWidth',3)
-%             hold on
-% 
-%             for peak = 1:length(peak_idx)
-%                 scatter(peak_idx(peak),meanSpikes(peak_idx(peak)),200,'filled')
-%             end
-% 
-%             pause
 
         end
     end

@@ -82,7 +82,7 @@ for ap = 1:length(Animals)
     end % ends loop through units
 
     % UNCOMMENT BELOW TO SAVE THE BEST FREQUENCY VARIABLE IN THE SPIKING FILE
-    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
-        'Y','type','F0','sensitivity','BFs')
+    % save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+        % 'Y','type','F0','sensitivity','BFs')
 
 end % ends loop through recordings

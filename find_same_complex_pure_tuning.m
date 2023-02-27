@@ -1,4 +1,5 @@
-
+%% Find pitch neurons by defining them as in Bendor and Wang: neurons with same tuning for pure tone and missing fundamental
+% DEPENDENCIES: plot_tuning_by_cond.m (if plot_yn == 'y')
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, January 2023
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...

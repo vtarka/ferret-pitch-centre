@@ -1,5 +1,6 @@
 
 %% Look for pitch neurons as defined by a strong correlation between pure tone tuning and allHarm tuning
+% DEPENDENCIES: plot_tuning_by_cond.m (if plot_yn == 'y')
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, January 2023
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...

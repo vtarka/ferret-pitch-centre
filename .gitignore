@@ -5,9 +5,15 @@ veronica/
 plot_corr_comparison.m
 plot_corrs.m
 
-# Images
 *.png
 *.jpg
 *.jpeg
 *.pdf
 *.svg
+
+
+MIspikecountPitch_FullyConfounded_Nelken.m
+
+
+
+ResampleSpikeDataC.m
