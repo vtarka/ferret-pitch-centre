@@ -3,9 +3,17 @@ veronica/
 *.mat
 
 plot_corr_comparison.m
-
 plot_corrs.m
 
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.svg
+
+
 MIspikecountPitch_FullyConfounded_Nelken.m
+
+
 
 ResampleSpikeDataC.m
