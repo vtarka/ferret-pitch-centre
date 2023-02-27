@@ -188,7 +188,7 @@ for ap = 1:length(Animals)
         load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
     
         subplot(2,3,sp_counter) 
-        histogram(Y(:,2))
+        histogram(Y(Y(:,2)~=0,2))
         xlabel('Spike time (s after stimulus)')
         sp_counter = sp_counter + 1;
     end
