@@ -102,7 +102,7 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % UNCOMMENT BELOW TO SAVE THE SENSITIVITY VARIABLE IN THE SPIKING FILE
-    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
-       'Y','type','F0','sensitivity')
+    % save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+       % 'Y','type','F0','sensitivity')
 
 end % ends the file-loading loop

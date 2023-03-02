@@ -1,6 +1,8 @@
 
-%% Go through each stimulus type and determine whether the neuron is sensitive
-% to variations in F0 using a one-way ANOVA
+%% For each neuron, for each stimulus, compare pre- and post-onset responses (averaged
+% across F0s) using a t-test, and do the same for pre- and post-offset responses,
+% OUTPUT: saves an additional variable in the spiketime .mats called 'active' describing whether
+% the unit passed the t-test for that stimulus at the onset active(unit,stim,1) or offset active(unit,stim,2)
 % DEPENDENCE: plot_tuning_by_cond
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, February 2023
 
@@ -118,7 +120,7 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % UNCOMMENT BELOW TO SAVE THE SENSITIVITY VARIABLE IN THE SPIKING FILE
-    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
-       'Y','type','F0','active')
+    % save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+       % 'Y','type','F0','active')
 
 end % ends the file-loading loop

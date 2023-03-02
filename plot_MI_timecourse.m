@@ -967,3 +967,189 @@ for ss = 1:length(stims)
 %     xticks(0:5:30)
 %     xticklabels(0:75:500)
 end
+
+%% Cluster MI timecourses
+
+load('unit_MIs_30ms_fixed.mat')
+
+penLocs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3];
+
+MI_tcs = [];
+stim_labels = [];
+pen_labels = [];
+for pen = 1:length(unit_MIs)
+
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' unit_MIs{pen,1} '/tmp/Spikes_' unit_MIs{pen,1} '_' unit_MIs{pen,2} '_Good_Pitch.mat']);
+
+    MIs = unit_MIs{pen,3};
+
+    for uu = 1:size(MIs,1)
+
+        for ss = 1:size(MIs,2)
+
+            if sensitivity(uu,ss)==1
+
+                if pen == -1
+                    temp = squeeze(MIs(uu,ss,:));
+                    postStim100 = temp(21:27);
+                    replacement100 = vertcat(temp(28:32),temp(16:17));
+                    temp(14:20) = postStim100;
+                    temp(21:27) = replacement100;
+                    MI_tcs = [MI_tcs; MIs(uu,ss,:)];
+                else
+                    MI_tcs = [MI_tcs; MIs(uu,ss,:)];
+                end
+
+                stim_labels = [stim_labels; ss];
+                pen_labels = [pen_labels; penLocs(pen)];
+
+            end
+        end
+    end
+end
+
+MI_tcs = squeeze(MI_tcs);
+
+% normalize the MI timecourses
+norm_MI_tcs = zeros(size(MI_tcs));
+problem_rows = [];
+for uu = 1:length(MI_tcs)
+        
+    mean_subtracted = MI_tcs(uu,:) - mean(MI_tcs(uu,:));
+    range_normalized = mean_subtracted / range(MI_tcs(uu,:));
+
+    if ~isempty(find(isnan(range_normalized), 1))
+        problem_rows = [problem_rows; uu];
+    end
+    norm_MI_tcs(uu,:) = range_normalized;
+
+end
+
+norm_MI_tcs(problem_rows,:) = [];
+
+within_cluster_var = zeros(25,1);
+for i = 1:25
+
+    k = i;
+    [~,~,sumd,~] = kmeans(norm_MI_tcs,k);
+    within_cluster_var(i) = mean(sumd);
+
+end
+
+%%
+
+k = 5;
+[idx,C,sumd,D] = kmeans(norm_MI_tcs,k);
+
+figure;
+
+clusterSizes = zeros(k,1);
+for i = 1:k
+    
+    thisCluster = norm_MI_tcs(idx==i,:);
+    clusterSizes(i) = size(thisCluster,1);
+
+    if ~isempty(thisCluster)
+
+        subplot(3,2,i); errorbar(mean(thisCluster),std(thisCluster),'LineWidth',3)
+        title(sprintf('Cluster %d',i))
+        xticks(0:15:60)
+        xticklabels(0:150:600)
+        yticks(-0.5:0.3:1.5)
+
+        set(gca,'fontsize',22)
+    end
+
+end
+
+ylabel('Normalized Firing Rate')
+xlabel('ms after stimulus onset')
+subplot(3,2,6); bar(clusterSizes)
+% title('Number of Neurons per Cluster')
+% yticks(0:100:400)
+set(gca,'Fontsize',22)
+
+
+%% More clustering plots
+
+% subplots = [1 3 5; 2 4 6; 7 9 11; 8, 10 12; 13 15 17];
+subplots = [1 3; 2 4; 5 7; 6 8; 9 11];
+
+figure;
+stims = unique(type);
+
+timebins = 0:15:500;
+
+stim_frequencies = zeros(13,k);
+loc_frequencies = zeros(5,k);
+
+for i = 1:k
+    
+    thisCluster = norm_MI_tcs(idx==i,:);
+    thisClusterStims = stim_labels(idx==i);
+    thisClusterLocs = pen_labels(idx==i);
+
+    [N,edges] = histcounts(thisClusterStims,13);
+
+    norm_N = zeros(size(N));
+    for ss = 1:length(edges)-1
+        norm_N(ss) = N(ss)/length(find(stim_labels==ss));
+    end
+
+    [N,edges] = histcounts(thisClusterLocs,5);
+
+    norm_locs = zeros(size(N));
+    for ll = 1:length(edges)-1
+        norm_locs(ll) = N(ll)/length(find(pen_labels==ll));
+    end
+    loc_frequencies(:,i) = norm_locs;
+
+    if ~isempty(thisCluster)
+
+        subplot(6,2,subplots(i,1)); errorbar(mean(thisCluster),std(thisCluster),'LineWidth',3)
+        title(sprintf('Cluster %d',i))
+        xticks([1 7 14 21 28])
+        xticklabels(timebins([1 7 14 21 28]))
+        yticks(-0.5:0.3:1.5)
+        axis tight
+        set(gca,'fontsize',22)
+
+
+        % plot the stims present in the cluster
+        subplot(6,2,subplots(i,2))
+%         histogram(thisClusterStims)
+        bar(norm_N)
+        stim_frequencies(:,i) = norm_N;
+        axis tight
+        ylim([0 0.38])
+        set(gca,'fontsize',22)
+        
+    end
+
+end
+
+yaxismax = 0.4;
+figure; 
+subplot(2,1,1)
+bar(stim_frequencies(1:7,:))
+xticks(1:7)
+xticklabels(stims(1:7))
+ylim([ 0 yaxismax])
+set(gca,'fontsize',24)
+
+subplot(2,1,2)
+bar(stim_frequencies(8:13,:))
+xticks(1:6)
+xticklabels(stims(8:13))
+ylim([ 0 yaxismax])
+set(gca,'fontsize',24)
+
+legend({'Cluster 1  ','Cluster 2  ','Cluster 3  ','Cluster 4  ','Cluster 5  '},'numcolumns',5)
+
+
+
+figure;
+bar(loc_frequencies)
+xticklabels({'low A1','high A1','low AAF','high AAF','PPF'})
+set(gca,'fontsize',24)
+legend({'Cluster 1  ','Cluster 2  ','Cluster 3  ','Cluster 4  ','Cluster 5  '},'numcolumns',5)
