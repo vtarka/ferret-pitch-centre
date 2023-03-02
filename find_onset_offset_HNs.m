@@ -1,4 +1,4 @@
-
+%%%%%%%%%%%%%%%%% DEPRECATED %%%%%%%%%%%%%%%%%%%%%%
 
 %% Find HNs by defining them as neurons F0-sensitive to low harm and CT0 but not high harm
 % low and CT0 tuning must also be correlated with rho > rho_threshold

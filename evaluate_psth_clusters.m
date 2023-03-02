@@ -1,5 +1,4 @@
 %% Script to find clusters of neurons by PSTH shape
-% DEPENDENCES:
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, February 2023
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
@@ -16,11 +15,19 @@ Qualia = 'Good';
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %             1       2          3         4        5             6          7                 8           9          10       11       12        13
 
-windows = [0:10:590; 10:10:600]'/1000;
+windows = [0:10:590; 10:10:600]'/1000; % 10 ms windows to sum spiketimes over to build the PSTH
 
 % initialize the space to save the data we'll put into k-means
 % every unit has one row, which is an average of all of its responses
-all_unit_psth = zeros(1311,length(windows)); 
+nUnits = 1311;
+all_unit_psth = zeros(nUnits,length(windows)); 
+pen_labels = zeros(nUnits,1);
+
+% functional locations of each penetration (as listed in variable 'Pens')
+%   low A1      high A1       low AAF      high AAF      PPF
+%     1            2             3           4            5
+penLocs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3]; 
+
 uCounter = 1;
 
 % for each recording
@@ -32,32 +39,35 @@ for ap = 1:length(Animals)
 
     for uu = 1:length(units)
 
-        if ~isempty(find(active(uu,:,1), 1))
+        unitSpikes = Y(Y(:,3)==units(uu),:);
 
-            unitSpikes = Y(Y(:,3)==units(uu),:);
+        trials = unique(unitSpikes(:,6));
+        nTrials = length(trials);
 
-            trials = unique(unitSpikes(:,6));
-            nTrials = length(trials);
+        nSpikes = zeros(nTrials,length(windows));
 
-            nSpikes = zeros(nTrials,length(windows));
+        for ww = 1:length(windows)
+
+            win_start = windows(ww,1);
+            win_end = windows(ww,2);
+
+            [r,c] = find(unitSpikes(:,2) > win_start & unitSpikes(:,2) <= win_end);
+            trials_with_spikes = unique(Y(r,6));
 
             for tt = 1:nTrials
 
-                for ww = 1:length(windows)
-            
-                win_start = windows(ww,1);
-                win_end = windows(ww,2);
+                if ismember(trials(tt),trials_with_spikes)
 
-                spikes = unitSpikes(:,2) >= win_start & unitSpikes(:,2) < win_end & unitSpikes(:,6) == trials(tt);
-                nSpikes(tt,ww) = sum(spikes);
+                    spikes = unitSpikes(:,2) > win_start & unitSpikes(:,2) <= win_end & unitSpikes(:,6) == trials(tt);
+                    nSpikes(tt,ww) = sum(spikes);
+                end
 
-                end % ends window loop
+            end % ends window loop
 
-            end % ends trial loop
+        end % ends trial loop
 
-            all_unit_psth(uCounter,:) = mean(nSpikes);
-            
-        end % ends active if condition
+        all_unit_psth(uCounter,:) = mean(nSpikes);
+        pen_labels(uCounter) = penLocs(ap);
 
         uCounter = uCounter + 1;
 
@@ -99,7 +109,7 @@ all_unit_psth(penLabels<9,:) = NoahUnits;
 %% Normalize and cluster the resulting matrix
 
 active_all_unit_psth = zeros(size(all_unit_psth));
-activePenLabels = zeros(length(penLabels),1);
+activePenLabels = zeros(size(pen_labels));
 emptyCounter = 0;
 activeCounter = 1;
 
@@ -107,7 +117,7 @@ for uu = 1:length(all_unit_psth)
 
     if ~isempty(find(all_unit_psth(uu,:),1))
         active_all_unit_psth(activeCounter,:) = all_unit_psth(uu,:);
-        activePenLabels(activeCounter) = penLabels(uu);
+        activePenLabels(activeCounter) = pen_labels(uu);
         activeCounter = activeCounter + 1;
     else
         emptyCounter = emptyCounter + 1;
@@ -124,7 +134,6 @@ for uu = 1:length(active_all_unit_psth)
     mean_subtracted = active_all_unit_psth(uu,:) - mean(active_all_unit_psth(uu,:));
     range_normalized = mean_subtracted / range(active_all_unit_psth(uu,:));
     norm_active_psths(uu,:) = range_normalized;
-
 end
 
 within_cluster_var = zeros(25,1);
@@ -144,10 +153,22 @@ k = 5;
 figure;
 
 clusterSizes = zeros(k,1);
+
+loc_frequencies = zeros(5,k);
+
 for i = 1:k
     
     thisCluster = norm_active_psths(idx==i,:);
     clusterSizes(i) = size(thisCluster,1);
+    thisClusterLocs = activePenLabels(idx==i);
+
+    [N,edges] = histcounts(thisClusterLocs,5);
+
+    norm_locs = zeros(size(N));
+    for ll = 1:length(edges)-1
+        norm_locs(ll) = N(ll)/length(find(activePenLabels==ll));
+    end
+    loc_frequencies(:,i) = norm_locs;
 
     if ~isempty(thisCluster)
 

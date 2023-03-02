@@ -13,7 +13,6 @@ Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
 
 Qualia = 'Good';
 
-rho_threshold = -1;
 plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
@@ -21,7 +20,7 @@ plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 
 unit_MIs  = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 
-bin_dur = 20; % bin duration in ms
+bin_dur = 30; % bin duration in ms
 time_bins = 0:bin_dur/2:500;
 
 % for each recording
@@ -47,12 +46,6 @@ for ap = 1:length(Animals)
         % for each stimulus
         for ss = 1:length(stims)
 
-            % for now only look at stims that modulated the neuronal
-            % responses
-%             if sensitivity(uu,ss) ~= 1
-%                 continue
-%             end
-
             for bin=1:length(time_bins)-2
                 bin_start = time_bins(bin)/1000;
                 bin_end = time_bins(bin+2)/1000;
@@ -72,7 +65,7 @@ for ap = 1:length(Animals)
                     % for each presentation of this stim
                     for rr = 1:length(repeats)
                     
-                        spikeIDXs = unitSpikes(:,4)==stimNum & unitSpikes(:,5)==repeats(rr) & unitSpikes(:,2)>=bin_start & unitSpikes(:,2)<bin_end;
+                        spikeIDXs = unitSpikes(:,4)==stimNum & unitSpikes(:,5)==repeats(rr) & unitSpikes(:,2)>bin_start & unitSpikes(:,2)<=bin_end;
                         nSpikes(rr,ff) = sum(spikeIDXs);
         
                     end   
@@ -80,27 +73,19 @@ for ap = 1:length(Animals)
 
                 uniqueSpikeRates = unique(nSpikes);
 
-                % if the unit spiked the same rate all the time, the MI is
-                % 0
+                % if the unit spiked the same rate all the time, the MI is 0
                 if length(uniqueSpikeRates)==1
-
                     MI_timecourses(ss,bin) = 0;
-
                 else
                     
                     freq_histc = zeros(length(Flist),length(uniqueSpikeRates));
     
+                    % build a matrix for how many times a spike rate x was evoked by an F0 y
                     for ff = 1:length(Flist)
                         freq_histc(ff,:) = histcounts(nSpikes(:,ff),[uniqueSpikeRates; max(uniqueSpikeRates)+1]);
                     end
-
-%                     freq_histc_combined = zeros(floor(length(Flist)/2),length(uniqueSpikeRates));
-%                     idx = 1:2:length(Flist)-1;
-%                     for ff = 1:length(idx)
-%                         freq_histc_combined(ff,:) = freq_histc(idx(ff),:)+freq_histc(idx(ff)+1,:);
-%                     end
     
-                    [MI,rMI,bMI] = MI2unbiased(freq_histc);
+                    [MI,rMI,bMI] = MI2unbiased(freq_histc); % get the MI
                     tMI = rMI - bMI;
                     [aa,bb]=max(tMI(1:end-1)); %find the MI and bias we used
                     MI_timecourses(ss,bin) = rMI(bb);

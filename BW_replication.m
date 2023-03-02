@@ -611,4 +611,3 @@ xlim([1 10]); xticks(2:2:10);
 ylabel('Normalized discharge rate')
 xlabel('Lowest harmonic present')
 set(gca,'FontSize',20)
-

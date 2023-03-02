@@ -36,7 +36,7 @@ for ap = 1:length(Animals)
 
         % if this unit was not frequency sensitive to any stim-type, skip it
         if isempty(find(sensitivity(uu,:), 1))
-%             sprintf('%s, %s, unit %d does not have any frequency selective neurons.',Animals{ap},Pens{ap},units(uu))  
+            sprintf('%s, %s, unit %d is not F0-sensitive to any stimulus.',Animals{ap},Pens{ap},units(uu))  
             not_f0_sensitive = not_f0_sensitive + 1;
             continue
         end
