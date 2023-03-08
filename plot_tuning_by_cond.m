@@ -58,7 +58,11 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
 
         %%%%%%%%%%%%%%%%%%%%% plot the PTSH %%%%%%%%%%%%%%%%%%%%%%%%%
 
-        h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
+        if strcmp('low',stims{ss})
+            h = shadedErrorBar(3:17,meanSpikes(3:end),ste(nSpikes(:,3:end)),{'Color',colors(ss,:)},1);
+        else
+            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
+        end
         h.mainLine.Annotation.LegendInformation.IconDisplayStyle = 'off';
         h.edge(1).Annotation.LegendInformation.IconDisplayStyle = 'off';
         h.edge(2).Annotation.LegendInformation.IconDisplayStyle = 'off';
@@ -81,7 +85,7 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
 
     end
 
-    legend(stims)
+%     legend(stims)
     
     return
 end
