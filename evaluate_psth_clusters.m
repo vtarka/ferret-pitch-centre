@@ -66,7 +66,7 @@ for ap = 1:length(Animals)
 
         end % ends trial loop
 
-        all_unit_psth(uCounter,:) = mean(nSpikes);
+        all_unit_psth(uCounter,:) = zscore(mean(nSpikes));
         pen_labels(uCounter) = penLocs(ap);
 
         uCounter = uCounter + 1;
@@ -191,35 +191,144 @@ yticks(0:100:400)
 set(gca,'Fontsize',22)
 
 %%
+
 figure;
+k2 = 3;
+c3 = norm_active_psths(idx==3,:);
+[idx2,C2,sumd2,D2] = kmeans(c3,k2);
 
-Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
-    'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
-    'Dory','Dory','Dory','Dory'};
+clusterSizes2 = zeros(k2,1);
 
-Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
-    'P04','P05','P08','P13','P02','P03','P05','P08',...
-    'P00','P01','P02','P04'};
+% loc_frequencies2 = zeros(5,k2);
 
-incl = [4 9 10 12 14];
-sp_counter = 1;
-for ap = 1:length(Animals)
-
-    if ismember(ap,incl)
-        load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+for i = 1:k2
     
-        subplot(2,3,sp_counter) 
-        histogram(Y(Y(:,2)~=0,2))
-        xlabel('Spike time (s after stimulus)')
-        sp_counter = sp_counter + 1;
-    end
-end
-%     units = unique(Y(:,3));
+    thisCluster = c3(idx2==i,:);
+    clusterSizes2(i) = size(thisCluster,1);
+%     thisClusterLocs = activePenLabels(idx2==i);
 % 
-%     for uu = 1:length(units)
-%         unitSpikes = Y(Y(:,3)==units(uu),:);
-%         clf
-%         histogram(unitSpikes(:,2),0:.01:max(unitSpikes(:,2)))
-%         pause
+%     [N,edges] = histcounts(thisClusterLocs,5);
+% 
+%     norm_locs = zeros(size(N));
+%     for ll = 1:length(edges)-1
+%         norm_locs(ll) = N(ll)/length(find(activePenLabels==ll));
 %     end
-% end
+%     loc_frequencies(:,i) = norm_locs;
+
+    if ~isempty(thisCluster)
+
+        subplot(2,2,i); errorbar(mean(thisCluster),std(thisCluster),'LineWidth',3)
+        title(sprintf('Cluster %d',i))
+        xticks(0:15:60)
+        xticklabels(0:150:600)
+        yticks(-0.5:0.3:1.5)
+
+        set(gca,'fontsize',22)
+    end
+
+end
+
+ylabel('Normalized Firing Rate')
+xlabel('ms after stimulus onset')
+subplot(2,2,4); bar(clusterSizes2)
+title('Number of Neurons per Cluster')
+yticks(0:100:400)
+set(gca,'Fontsize',22)
+
+
+%% Cluster onset and offset separately
+
+onset = [];
+offset = [];
+
+for uu = 1:size(active_all_unit_psth)
+
+    onset_response = active_all_unit_psth(uu,1:20);
+    offset_response = active_all_unit_psth(uu,21:end);
+
+    onset = [onset; onset_response];
+    offset = [offset; offset_response];
+
+end
+
+figure;
+k3 = 4;
+[idx3,C3,sumd3,D3] = kmeans(onset,k3);
+
+clusterSizes3 = zeros(k3,1);
+
+% loc_frequencies2 = zeros(5,k2);
+
+for i = 1:k3
+    
+    thisCluster = onset(idx3==i,:);
+    clusterSizes3(i) = size(thisCluster,1);
+%     thisClusterLocs = activePenLabels(idx2==i);
+% 
+%     [N,edges] = histcounts(thisClusterLocs,5);
+% 
+%     norm_locs = zeros(size(N));
+%     for ll = 1:length(edges)-1
+%         norm_locs(ll) = N(ll)/length(find(activePenLabels==ll));
+%     end
+%     loc_frequencies(:,i) = norm_locs;
+
+    if ~isempty(thisCluster)
+
+        subplot(3,2,i); errorbar(mean(thisCluster),std(thisCluster),'LineWidth',3)
+        title(sprintf('Cluster %d',i))
+        xticks(0:15:60)
+        xticklabels(0:150:600)
+        yticks(-0.5:0.3:1.5)
+
+        set(gca,'fontsize',22)
+    end
+
+end
+
+ylabel('Normalized Firing Rate')
+xlabel('ms after stimulus onset')
+subplot(3,2,6); bar(clusterSizes3)
+title('Number of Neurons per Cluster')
+
+
+figure;
+k4 = 4;
+[idx4,C4,sumd4,D4] = kmeans(offset,k4);
+
+clusterSizes4 = zeros(k4,1);
+
+% loc_frequencies2 = zeros(5,k2);
+
+for i = 1:k4
+    
+    thisCluster = offset(idx4==i,:);
+    clusterSizes4(i) = size(thisCluster,1);
+%     thisClusterLocs = activePenLabels(idx2==i);
+% 
+%     [N,edges] = histcounts(thisClusterLocs,5);
+% 
+%     norm_locs = zeros(size(N));
+%     for ll = 1:length(edges)-1
+%         norm_locs(ll) = N(ll)/length(find(activePenLabels==ll));
+%     end
+%     loc_frequencies(:,i) = norm_locs;
+
+    if ~isempty(thisCluster)
+
+        subplot(3,2,i); errorbar(mean(thisCluster),std(thisCluster),'LineWidth',3)
+        title(sprintf('Cluster %d',i))
+        xticks(0:15:60)
+        xticklabels(0:150:600)
+        yticks(-0.5:0.3:1.5)
+
+        set(gca,'fontsize',22)
+    end
+
+end
+
+ylabel('Normalized Firing Rate')
+xlabel('ms after stimulus onset')
+subplot(3,2,6); bar(clusterSizes4)
+title('Number of Neurons per Cluster')
+set(gca,'Fontsize',22)
