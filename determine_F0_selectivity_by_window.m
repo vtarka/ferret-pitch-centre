@@ -32,7 +32,7 @@ windows = [0 0.06; 0.06 0.15; 0.2 0.3];
 % for each recording
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp01/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     Flist = unique(F0);
@@ -87,6 +87,11 @@ for ap = 1:length(Animals)
     
                 end
     
+                if strcmp(stims{ss},'low') || strcmp(stims{ss},'F0MaskLow')
+                    spike_counts(:,1:2) = [];
+                    group_labels(1:2) = [];
+                end
+
                 % test whether F0 significantly modulates spike rate
                 [p,tbl,stats] = anova1(spike_counts,group_labels,'off');
                 

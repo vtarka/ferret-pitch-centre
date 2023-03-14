@@ -7,7 +7,7 @@
 figure;
 for pen = 1:length(HN_units)
     
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp02/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
     stims = {'high','low','CT0'};
     Flist = unique(F0);
@@ -42,7 +42,7 @@ sgtitle('Fast onset ONLY sensitive HNs','fontsize',32)
 figure;
 for pen = 1:length(HN_units)
     
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp02/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
     stims = {'high','low','CT0'};
     Flist = unique(F0);
@@ -76,7 +76,7 @@ sgtitle('Slow onset ONLY sensitive HNs','fontsize',32)
 figure;
 for pen = 1:length(HN_units)
     
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp02/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
     stims = {'high','low','CT0'};
     Flist = unique(F0);
@@ -116,7 +116,7 @@ figure;
 sp_counter = 1;
 for pen = 1:length(HN_units)
     
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp02/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
 
     stims = {'high','low','CT0'};
     Flist = unique(F0);
@@ -230,47 +230,138 @@ end % ends recording loop
 %% Plot HN_Unit locations
 
 loc_frequencies = [];
+loc_total_units = zeros(5,1);
 
-locs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3]; 
+pen_frequencies = [];
+pen_total_units = zeros(20,1);
+
+locs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3];
 
 for pen = 1:length(HN_units)
+
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp02/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
     
     HNUs = HN_units{pen,3};
+
+    loc_total_units(locs(pen)) = loc_total_units(locs(pen)) + length(unique(Y(:,3)));
+    pen_total_units(pen) = length(unique(Y(:,3)));
 
     for uu = 1:size(HNUs,1)
 
         loc_frequencies = [loc_frequencies; HNUs(uu,2) locs(pen)];
-    end
+        pen_frequencies = [pen_frequencies; HNUs(uu,2) pen];
 
+    end
 end
 
 w1_idx = loc_frequencies(:,1)==1;
 w2_idx = loc_frequencies(:,1)==2;
 w3_idx = loc_frequencies(:,1)==3;
 
+fsz = 22;
+
 figure;
-subplot(1,3,1)
-histogram(loc_frequencies(w1_idx,2))
+
+%%%%%%%%%%%%%%%%%% FAST ONSET %%%%%%%%%%%%%%%%%%%%
+subplot(2,3,1)
+w1_pens = zeros(4,7);
+c = histcounts(pen_frequencies(w1_idx,2),1:21);
+
+for i = 1:4
+    w1_pens(i,1:length(find(locs==i))) = sort(c(locs==i),'descend');
+end
+
+H = bar(1:4,w1_pens,'stacked');
+
 xticks(1:4)
 xticklabels({'lA1','hA1','lAAF','hAAF'})
-ylim([0 25])
-set(gca,'fontsize',18)
+ylim([0 15])
+ylabel('# of units')
+set(gca,'fontsize',fsz)
 title('Fast Onset')
 
-subplot(1,3,2)
-histogram(loc_frequencies(w2_idx,2))
-xlim([0 4.7])
+subplot(2,3,4)
+w1_pens_norm = zeros(4,7);
+nc = c ./ pen_total_units';
+
+for i = 1:4
+    w1_pens_norm(i,1:length(find(locs==i))) = sort(nc(locs==i),'descend');
+end
+
+H_norm = bar(1:4,w1_pens_norm,'stacked');
+
 xticks(1:4)
 xticklabels({'lA1','hA1','lAAF','hAAF'})
-ylim([0 25])
-set(gca,'fontsize',18)
+ylim([0 0.25])
+ylabel('# of units / total units in pen')
+set(gca,'fontsize',fsz)
+    
+
+%%%%%%%%%%%%%%%%%% SLOW ONSET %%%%%%%%%%%%%%%%%%%%
+subplot(2,3,2)
+w2_pens = zeros(4,7);
+c = histcounts(pen_frequencies(w2_idx,2),1:21);
+
+for i = 1:4
+    w2_pens(i,1:length(find(locs==i))) = sort(c(locs==i),'descend');
+end
+
+H = bar(1:4,w2_pens,'stacked');
+
+xticks(1:4)
+xticklabels({'lA1','hA1','lAAF','hAAF'})
+ylim([0 15])
+ylabel('# of units')
+set(gca,'fontsize',fsz)
 title('Slow Onset')
 
-subplot(1,3,3)
-histogram(loc_frequencies(w3_idx,2))
-xlim([0 4.7])
+subplot(2,3,5)
+w2_pens_norm = zeros(4,7);
+nc = c ./ pen_total_units';
+
+for i = 1:4
+    w2_pens_norm(i,1:length(find(locs==i))) = sort(nc(locs==i),'descend');
+end
+
+H_norm = bar(1:4,w2_pens_norm,'stacked');
+
 xticks(1:4)
 xticklabels({'lA1','hA1','lAAF','hAAF'})
-ylim([0 25])
-set(gca,'fontsize',18)
+ylim([0 0.25])
+ylabel('# of units / total units in pen')
+set(gca,'fontsize',fsz)
+
+
+%%%%%%%%%%%%%%%%%% OFFSET %%%%%%%%%%%%%%%%%%%%
+subplot(2,3,3)
+w3_pens = zeros(4,7);
+c = histcounts(pen_frequencies(w3_idx,2),1:21);
+
+for i = 1:4
+    w3_pens(i,1:length(find(locs==i))) = sort(c(locs==i),'descend');
+end
+
+H = bar(1:4,w3_pens,'stacked');
+
+xticks(1:4)
+xticklabels({'lA1','hA1','lAAF','hAAF'})
+ylim([0 15])
+ylabel('# of units')
+set(gca,'fontsize',fsz)
 title('Offset')
+
+subplot(2,3,6)
+w3_pens_norm = zeros(4,7);
+nc = c ./ pen_total_units';
+
+for i = 1:4
+    w3_pens_norm(i,1:length(find(locs==i))) = sort(nc(locs==i),'descend');
+end
+
+H_norm = bar(1:4,w3_pens_norm,'stacked');
+
+xticks(1:4)
+xticklabels({'lA1','hA1','lAAF','hAAF'})
+ylim([0 0.25])
+ylabel('# of units / total units in pen')
+set(gca,'fontsize',fsz)

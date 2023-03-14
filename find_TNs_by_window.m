@@ -1,7 +1,7 @@
-%% Find harmonicity neurons by responses within 3 different windows
-% Window 1: [0 70] 
-% Window 2: [0 150]
-% Window 3: [200 300] (unless Noah, then [300 400])
+%% Find periodicity (temporal) neurons by responses within response windows defined by the cluster assignments
+% Window 1: (0 60] 
+% Window 2: (60 150]
+% Window 3: (200 300] (unless Noah, then (300 400])
 % DEPENDENCIES: 
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
@@ -23,11 +23,11 @@ plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %             1       2          3         4        5             6          7                 8           9          10       11       12        13
 
-totalHN_count = 0;
-HN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
+totalTN_count = 0;
+TN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 rhos = [];
-loc_counts = [];
 
+loc_counts = [];
 windows = [0 0.06; 0.06 0.15; 0.2 0.3];
 
 % for each recording
@@ -40,17 +40,9 @@ for ap = 1:length(Animals)
     repeats = unique(Y(:,5));
     units = unique(Y(:,3));
 
-    if ap<9
-        lowStimNum = 13;
-        highStimNum = 12;
-    else
-        lowStimNum = 11;
-        highStimNum = 10;
-    end
+    stims_to_plot = {'CT0','high'};
 
-    stims_to_plot = {'CT0','low'};
-
-    HN_unit_list = []; % to keep track of HNs we find
+    TN_unit_list = []; % to keep track of HNs we find
     for uu = 1:length(units) % for each unit
         unit = units(uu);
 
@@ -62,8 +54,14 @@ for ap = 1:length(Animals)
                 window = windows(ww,:);
             end
 
-            % if the unit is F0-sensitive to CT0 and low, but not to high, look at its correlation
-            if sensitivity(uu,1,ww)==1 && sensitivity(uu,highStimNum,ww)==0 && sensitivity(uu,lowStimNum,ww)==1
+            if ap<9
+                highStimNum = 12;
+            else
+                highStimNum = 10;
+            end
+
+            % if the unit is F0-sensitive to CT0 and high
+            if sensitivity(uu,1,ww) && sensitivity(uu,highStimNum,ww)
     
                 loc_counts(end+1) = locs(ap);
     
@@ -105,16 +103,17 @@ for ap = 1:length(Animals)
                 rhos = [rhos; rho];
     
                 if rho>rho_threshold
-                    totalHN_count = totalHN_count + 1;
-                    HN_unit_list = [HN_unit_list; unit ww];
+                    totalTN_count = totalTN_count + 1;
+                    TN_unit_list = [TN_unit_list; unit ww];
         
                     if strcmp(plot_yn,'y')
         
                         clf
-                        stim_to_plot = {'high','low','CT0'};
-                        BFs_to_plot = [0 0 0]; %BFs(uu,[10 11 1]);
-                        plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{ap},Pens{ap},window);
-         
+                        stim_to_plot = {'low','CT0'};
+                        BFs_to_plot = [0 0]; %BFs(uu,[10 11 1]);
+                        plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{ap},Pens{ap});
+                        sgtitle(sprintf('Cluster %d',clusters(uu)))
+        
                         pause
         
                     end   
@@ -124,8 +123,50 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % save all the units we found for this penetration
-    HN_units{ap,1} = Animals{ap};
-    HN_units{ap,2} = Pens{ap};
-    HN_units{ap,3} = HN_unit_list;
+    TN_units{ap,1} = Animals{ap};
+    TN_units{ap,2} = Pens{ap};
+    TN_units{ap,3} = TN_unit_list;
 
 end % ends recording loop
+
+
+%% Check for tuning adjustments to high vs alt vs rand
+
+for pen = 1:length(TN_units)
+
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    units = TN_units{pen,3};
+    stim_to_plot = {'high','alt','rand'};
+    BFs_to_plot = [0 0 0];
+
+    for uu = 1:length(units)
+    
+        clf
+        plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{pen},Pens{pen});
+        pause
+
+    end
+
+end
+
+
+%% Check for tuning at click train jitters beyond 10%
+
+for pen = 1:length(TN_units)
+
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    units = TN_units{pen,3};
+    stim_to_plot = {'CT0','CT5','CT10','CT20','CT40'};
+    BFs_to_plot = [0 0 0 0 0];
+
+    for uu = 1:length(units)
+    
+        clf
+        plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{pen},Pens{pen});
+        pause
+
+    end
+
+end
