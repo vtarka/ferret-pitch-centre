@@ -23,7 +23,7 @@ for pen = 1:length(HN_units)
         if length(find(HNUnits==HNUnits(uu,1)))<2 && HNUnits(uu,2)==1
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -58,7 +58,7 @@ for pen = 1:length(HN_units)
         if length(find(HNUnits==HNUnits(uu,1)))<2 && HNUnits(uu,2)==2
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -96,7 +96,7 @@ for pen = 1:length(HN_units)
         if length(find(HNUnits==HNUnits(uu,1)))<2 && HNUnits(uu,2)==3
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -138,14 +138,14 @@ for pen = 1:length(HN_units)
             end
 
             subplot(6,4,sp_counter)
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(1,:));
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},windows(1,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(6,4,sp_counter + 1)
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(2,:));
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},windows(2,:));
             xlabel('')
             ylabel('')
             xticks([])
@@ -196,21 +196,21 @@ for pen = 1:length(HN_units)
             end
 
             subplot(2,3,sp_counter)
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(1,:));
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},windows(1,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(2,3,sp_counter + 1)
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(2,:));
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},windows(2,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(2,3,sp_counter + 2)
-            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(3,:));
+            plot_tuning_by_cond(Y,type,F0,HNUnits(uu,1),stims,zeros(length(stims),1),HN_units{pen,1},HN_units{pen,2},windows(3,:));
             xlabel('')
             ylabel('')
             xticks([])
@@ -226,6 +226,237 @@ for pen = 1:length(HN_units)
     end
 end % ends recording loop
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CLICK TRAIN PLOTS %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+% for each penetration
+figure;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'CT0','CT5','CT10','CT20','CT40'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    window = [0 0.06];
+
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==1
+
+            nexttile
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+        end
+    end
+end
+
+sgtitle('Fast onset ONLY sensitive HNs','fontsize',32)
+
+%%
+%%%%%%%%%%%% WINDOW 2 CT PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'CT0','CT5','CT10','CT20','CT40'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    window = [0.06 0.15];
+
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==2
+
+            nexttile
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+        end
+    end
+end
+
+sgtitle('Slow onset ONLY sensitive HNs','fontsize',32)
+
+
+%%
+%%%%%%%%%%%% WINDOW 3 CT PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'CT0','CT5','CT10','CT20','CT40'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    if pen<9
+        window = [.3 .4];
+    else
+        window = [.2 .3];
+    end
+
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==3
+
+            nexttile
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+        end
+    end
+end
+
+sgtitle('Offset ONLY sensitive HNs','fontsize',32)
+
+
+%%
+%%%%%%%%%%%% WINDOW 1 & 2 PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+sp_counter = 1;
+nPlots = 5;
+flag = 1;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'CT0','CT5','CT10','CT20','CT40'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    windows = [0 0.06; 0.06 0.15];
+
+    
+    skip_next = 0;
+    for uu = 1:size(TNUnits,1)
+        
+        if length(find(TNUnits==TNUnits(uu,1)))==2 && ~skip_next
+
+%             if sp_counter > 16 && flag==1
+%                 figure;
+%                 sp_counter = 1;
+%                 nPlots = 5;
+%                 flag = 0;
+%             end
+
+            subplot(nPlots,4,sp_counter)
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(1,:));
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+            subplot(nPlots,4,sp_counter + 1)
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(2,:));
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+            sp_counter = sp_counter + 2;
+
+            skip_next = 1;
+
+        else
+            skip_next = 0;
+        end
+    end
+end % ends recording loop
+
+sgtitle('')
+
+%%
+%%%%%%%%%%%% WINDOW 1 & 2 & 3 PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+sp_counter = 1;
+nPlots = 7;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'CT0','CT5','CT10','CT20','CT40'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    if pen < 9
+        windows = [0 0.06; 0.06 0.15; 0.3 0.4];
+    else
+        windows = [0 0.06; 0.06 0.15; 0.2 0.3];
+    end
+
+    skip_next = 0;
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))==3 && ~skip_next
+
+%             if sp_counter > 24
+%                 figure;
+%                 sp_counter = 1;
+%             end
+
+            subplot(nPlots,3,sp_counter)
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(1,:));
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+            subplot(nPlots,3,sp_counter + 1)
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(2,:));
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+            subplot(nPlots,3,sp_counter + 2)
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(3,:));
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+            sp_counter = sp_counter + 3;
+
+            skip_next = 1;
+
+        else
+            skip_next = 0;
+        end
+    end
+end % ends recording loop
+
+sgtitle('')
+
 
 %% Plot HN_Unit locations
 
@@ -237,11 +468,19 @@ pen_total_units = zeros(20,1);
 
 locs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3];
 
+n = 0;
+nU = 0;
+
 for pen = 1:length(HN_units)
 
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' HN_units{pen,1} '/tmp02/Spikes_' HN_units{pen,1} '_' HN_units{pen,2} '_Good_Pitch.mat']);
     
     HNUs = HN_units{pen,3};
+
+    if ~isempty(HNUs)
+        n = n + size(HNUs,1);
+        nU = nU + length(unique(HNUs(:,1)));
+    end
 
     loc_total_units(locs(pen)) = loc_total_units(locs(pen)) + length(unique(Y(:,3)));
     pen_total_units(pen) = length(unique(Y(:,3)));
@@ -310,7 +549,7 @@ H = bar(1:4,w2_pens,'stacked');
 
 xticks(1:4)
 xticklabels({'lA1','hA1','lAAF','hAAF'})
-ylim([0 15])
+% ylim([0 15])
 ylabel('# of units')
 set(gca,'fontsize',fsz)
 title('Slow Onset')
@@ -345,7 +584,7 @@ H = bar(1:4,w3_pens,'stacked');
 
 xticks(1:4)
 xticklabels({'lA1','hA1','lAAF','hAAF'})
-ylim([0 15])
+% ylim([0 15])
 ylabel('# of units')
 set(gca,'fontsize',fsz)
 title('Offset')

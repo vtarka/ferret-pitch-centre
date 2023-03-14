@@ -3,6 +3,172 @@
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
 
+%%%%%%%%%%%%%%%%%%%%% HIGH LOW CT0 PLOTS %%%%%%%%%%%%%%%%%%
+
+load('TNs_fNoah.mat')
+
+%%
+%%%%%%%%%%%% WINDOW 1 PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'high','low','CT0'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    window = [0 0.06];
+
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==1
+
+            nexttile
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+        end
+
+    end
+end % ends recording loop
+
+sgtitle('Fast onset ONLY sensitive TNs','fontsize',32)
+
+%%
+%%%%%%%%%%%% WINDOW 2 PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'high','low','CT0'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    window = [0.06 0.15];
+
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==2
+
+            nexttile
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+        end
+
+    end
+end % ends recording loop
+
+sgtitle('Slow onset ONLY sensitive TNs','fontsize',32)
+
+%%
+%%%%%%%%%%%% WINDOW 3 PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'high','low','CT0'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    if pen<9
+        window = [0.3 0.4];
+    else
+        window = [0.2 0.3];
+    end
+
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==3
+
+            nexttile
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+        end
+
+    end
+end % ends recording loop
+
+sgtitle('Offset ONLY sensitive TNs','fontsize',32)
+
+%%
+%%%%%%%%%%%% WINDOW 1 & 2 PLOT %%%%%%%%%%%%%
+% for each penetration
+figure;
+sp_counter = 1;
+for pen = 1:length(TN_units)
+    
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
+
+    stims = {'high','low','CT0'};
+    Flist = unique(F0);
+    repeats = unique(Y(:,5));
+    allUnits = unique(Y(:,3));
+
+    TNUnits = TN_units{pen,3};
+
+    windows = [0 0.06; 0.06 0.15];
+
+    skip_next = 0;
+    for uu = 1:size(TNUnits,1)
+
+        if length(find(TNUnits==TNUnits(uu,1)))==2 && ~skip_next
+
+            if sp_counter > 24
+                figure;
+                sp_counter = 1;
+            end
+
+            subplot(6,4,sp_counter)
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(1,:));
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+            subplot(6,4,sp_counter + 1)
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(2,:));
+            xlabel('')
+            ylabel('')
+            xticks([])
+            yticks([])
+
+            sp_counter = sp_counter + 2;
+
+            skip_next = 1;
+
+        else
+            skip_next = 0;
+        end
+    end
+end % ends recording loop
+
+sgtitle('')
+
+
+%%
 %%%%%%%%%%%%%%% PHASE SHIFT PLOTS %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% WINDOW 1 HIGH ALT RAND PLOT %%%%%%%%%%%%%
 % for each penetration
@@ -25,7 +191,7 @@ for pen = 1:length(TN_units)
         if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==1
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -35,7 +201,7 @@ for pen = 1:length(TN_units)
     end
 end
 
-sgtitle('')
+sgtitle('Fast onset ONLY sensitive TNs','fontsize',32)
 
 %%
 %%%%%%%%%%%% WINDOW 2 HIGH ALT RAND PLOT %%%%%%%%%%%%%
@@ -59,7 +225,7 @@ for pen = 1:length(TN_units)
         if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==2
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -68,7 +234,7 @@ for pen = 1:length(TN_units)
     end
 end
 
-sgtitle('')
+sgtitle('Slow onset ONLY sensitive TNs','fontsize',32)
 
 %%
 %%%%%%%%%%%% WINDOW 3 HIGH ALT RAND PLOT %%%%%%%%%%%%%
@@ -96,7 +262,7 @@ for pen = 1:length(TN_units)
         if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==3
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -105,7 +271,7 @@ for pen = 1:length(TN_units)
     end
 end
 
-sgtitle('')
+sgtitle('Offset ONLY sensitive TNs','fontsize',32)
 
 %%
 %%%%%%%%%%%% WINDOW 1 & 2 PLOT %%%%%%%%%%%%%
@@ -131,10 +297,6 @@ for pen = 1:length(TN_units)
     skip_next = 0;
     for uu = 1:size(TNUnits,1)
 
-        if TNUnits(uu,1)==289
-            continue
-        end
-
         if length(find(TNUnits==TNUnits(uu,1)))==2 && ~skip_next
 
             if sp_counter > 16 && flag==1
@@ -145,14 +307,14 @@ for pen = 1:length(TN_units)
             end
 
             subplot(nPlots,4,sp_counter)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(1,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(1,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(nPlots,4,sp_counter + 1)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(2,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(2,:));
             xlabel('')
             ylabel('')
             xticks([])
@@ -168,6 +330,7 @@ for pen = 1:length(TN_units)
     end
 end % ends recording loop
 
+sgtitle('')
 
 %%
 %%%%%%%%%%%% WINDOW 1 & 2 & 3 PLOT %%%%%%%%%%%%%
@@ -203,21 +366,21 @@ for pen = 1:length(TN_units)
 %             end
 
             subplot(nPlots,3,sp_counter)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(1,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(1,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(nPlots,3,sp_counter + 1)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(2,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(2,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(nPlots,3,sp_counter + 2)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(3,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(3,:));
             xlabel('')
             ylabel('')
             xticks([])
@@ -259,7 +422,7 @@ for pen = 1:length(TN_units)
         if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==1
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -269,7 +432,7 @@ for pen = 1:length(TN_units)
     end
 end
 
-sgtitle('')
+sgtitle('Fast onset ONLY sensitive TNs','fontsize',32)
 
 %%
 %%%%%%%%%%%% WINDOW 2 CT PLOT %%%%%%%%%%%%%
@@ -293,7 +456,7 @@ for pen = 1:length(TN_units)
         if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==2
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -302,7 +465,7 @@ for pen = 1:length(TN_units)
     end
 end
 
-sgtitle('')
+sgtitle('Slow onset ONLY sensitive TNs','fontsize',32)
 
 
 %%
@@ -331,7 +494,7 @@ for pen = 1:length(TN_units)
         if length(find(TNUnits==TNUnits(uu,1)))<2 && TNUnits(uu,2)==3
 
             nexttile
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},window);
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},window);
             xlabel('')
             ylabel('')
             xticks([])
@@ -340,7 +503,7 @@ for pen = 1:length(TN_units)
     end
 end
 
-sgtitle('')
+sgtitle('Offset ONLY sensitive TNs','fontsize',32)
 
 
 %%
@@ -366,11 +529,7 @@ for pen = 1:length(TN_units)
     
     skip_next = 0;
     for uu = 1:size(TNUnits,1)
-
-        if TNUnits(uu,1)==289
-            continue
-        end
-
+        
         if length(find(TNUnits==TNUnits(uu,1)))==2 && ~skip_next
 
             if sp_counter > 16 && flag==1
@@ -381,14 +540,14 @@ for pen = 1:length(TN_units)
             end
 
             subplot(nPlots,4,sp_counter)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(1,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(1,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(nPlots,4,sp_counter + 1)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(2,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(2,:));
             xlabel('')
             ylabel('')
             xticks([])
@@ -404,6 +563,7 @@ for pen = 1:length(TN_units)
     end
 end % ends recording loop
 
+sgtitle('')
 
 %%
 %%%%%%%%%%%% WINDOW 1 & 2 & 3 PLOT %%%%%%%%%%%%%
@@ -439,21 +599,21 @@ for pen = 1:length(TN_units)
 %             end
 
             subplot(nPlots,3,sp_counter)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(1,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(1,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(nPlots,3,sp_counter + 1)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(2,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(2,:));
             xlabel('')
             ylabel('')
             xticks([])
             yticks([])
 
             subplot(nPlots,3,sp_counter + 2)
-            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),Animals{ap},Pens{ap},windows(3,:));
+            plot_tuning_by_cond(Y,type,F0,TNUnits(uu,1),stims,zeros(length(stims),1),TN_units{pen,1},TN_units{pen,2},windows(3,:));
             xlabel('')
             ylabel('')
             xticks([])
