@@ -1,4 +1,4 @@
-%% Find periodicity (temporal) neurons by responses within response windows defined by the cluster assignments
+%% Find periodicity (temporal) neurons by responses within 3 response windows (in ms)
 % Window 1: (0 60] 
 % Window 2: (60 150]
 % Window 3: (200 300] (unless Noah, then (300 400])
@@ -128,45 +128,3 @@ for ap = 1:length(Animals)
     TN_units{ap,3} = TN_unit_list;
 
 end % ends recording loop
-
-
-%% Check for tuning adjustments to high vs alt vs rand
-
-for pen = 1:length(TN_units)
-
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
-
-    units = TN_units{pen,3};
-    stim_to_plot = {'high','alt','rand'};
-    BFs_to_plot = [0 0 0];
-
-    for uu = 1:length(units)
-    
-        clf
-        plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{pen},Pens{pen});
-        pause
-
-    end
-
-end
-
-
-%% Check for tuning at click train jitters beyond 10%
-
-for pen = 1:length(TN_units)
-
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
-
-    units = TN_units{pen,3};
-    stim_to_plot = {'CT0','CT5','CT10','CT20','CT40'};
-    BFs_to_plot = [0 0 0 0 0];
-
-    for uu = 1:length(units)
-    
-        clf
-        plot_tuning_by_cond(Y,type,F0,units(uu),stim_to_plot,BFs_to_plot,Animals{pen},Pens{pen});
-        pause
-
-    end
-
-end

@@ -1,9 +1,9 @@
 
-%% Determine whether cells are F0-sensitive in 3 different windows
+%% Determine whether cells are F0-sensitive in 3 different windows (in ms)
 % Window 1: (0 60] 
 % Window 2: (60 150]
 % Window 3: (200 300] (unless Noah, then (300 400])
-% DEPENDENCIES: plot_tuning_by_cond.m
+% DEPENDENCIES: plot_tuning_by_cond.m (if plot_yn == 'y')
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
@@ -19,14 +19,14 @@ Qualia = 'Good';
 p_threshold = 0.01; % significance threshold for unit to be considered F0-sensitive
 plot_yn = 'n'; % y = include plots of every stimulus the unit is F0-sensitive to, n = skip the plots
 
-% %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
-% %             1       2          3         4        5             6          7                 8           9          10       11       12        13
+% %stimList:         'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
+% %  # (Noaah #)       1       2          3         4        5             6            7             8 (10)       9 (11)    10 (12)   11 (13)  12 (14)   13 (15)
 
-not_sensitive_w = [];
-not_sensitive_u = [];
+not_sensitive_w = []; % keep track of the window the unit was not sensitive in
+not_sensitive_u = []; % keep track of units found to not be sensitive at all
 uCounter = 1;
 
-windows = [0 0.06; 0.06 0.15; 0.2 0.3];
+windows = [0 0.06; 0.06 0.15; 0.2 0.3]; % windows in seconds to evaluate F0 sensitivity
 
 
 % for each recording
@@ -48,7 +48,7 @@ for ap = 1:length(Animals)
         for ww = 1:size(windows,1)
 
             if ap < 9 && ww == 3 % if we're looking at Noah offset
-                window = [0.3 0.4];
+                window = [0.3 0.4]; % his tones lasted for 300 ms rather than 200 ms
             else
                 window = windows(ww,:);
             end
@@ -83,7 +83,7 @@ for ap = 1:length(Animals)
         
                     end 
     
-                    group_labels{ff} = num2str(Flist(ff));
+                    group_labels{ff} = num2str(Flist(ff)); % create group labels for MATLAB ANOVA function
     
                 end
     
@@ -104,7 +104,7 @@ for ap = 1:length(Animals)
             end % ends the stim loop  
     
             if found_sensitive == 0 
-                not_sensitive_w(end+1) = ww; %[not_sensitive_c; cluster(uu)];
+                not_sensitive_w(end+1) = ww;
                 not_sensitive_u(end+1) = uCounter;
             end
     
@@ -136,7 +136,7 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % UNCOMMENT BELOW TO SAVE THE SENSITIVITY VARIABLE IN THE SPIKING FILE
-    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
-       'Y','type','F0','sensitivity')
+    % save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+       % 'Y','type','F0','sensitivity')
 
 end % ends the file-loading loop

@@ -1,4 +1,5 @@
 %% Plot histogram of tuning differences between high and alt, and high and rand
+% DEPENDENCIES: plot_tuning_by_cond.m
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
 load('HNs_fNoah.mat')
@@ -15,7 +16,6 @@ for pen = 1:size(HN_units,1)
     stims = {'high','alt','rand'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
-%     units = unique(Y(:,3));
 
     HNUs = HN_units{pen,3};
 
@@ -76,7 +76,7 @@ end
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%% TNs %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% TNs %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 TNalt_diffs = [];
 TNrand_diffs = [];
@@ -157,7 +157,6 @@ for pen = 1:size(PN_units,1)
     stims = {'high','alt','rand'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
-%     units = unique(Y(:,3));
 
     PNUs = PN_units{pen,3};
 

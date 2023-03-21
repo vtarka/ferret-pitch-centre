@@ -1,7 +1,9 @@
 %% Plots Noah's allHarmRand vs low tuning for harmonicity neurons
+% DEPENDENCIES: plot_tuning_by_cond.m 
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
-HN_units = TN_units;
+load('HNs_fNoah.mat')
+
 %%%%%%%%%%%% WINDOW 1 PLOT %%%%%%%%%%%%%
 % for each penetration
 figure;
@@ -33,7 +35,7 @@ for pen = 1:8
     end
 end % ends recording loop
 
-sgtitle('Fast onset ONLY sensitive TNs','fontsize',32)
+sgtitle('Fast onset ONLY sensitive HNs','fontsize',32)
 
 
 %%
@@ -68,7 +70,7 @@ for pen = 1:8
     end
 end % ends recording loop
 
-sgtitle('Slow onset ONLY sensitive TNs','fontsize',32)
+sgtitle('Slow onset ONLY sensitive HNs','fontsize',32)
 
 %%
 %%%%%%%%%%%% WINDOW 3 PLOT %%%%%%%%%%%%%
@@ -106,7 +108,7 @@ for pen = 1:8
     end
 end % ends recording loop
 
-sgtitle('Offset ONLY sensitive TNs','fontsize',32)
+sgtitle('Offset ONLY sensitive HNs','fontsize',32)
 
 
 %%
