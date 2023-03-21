@@ -25,8 +25,8 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
     end
     
 %     figure('Position',[1900 500 1800 1200])
-    figure
-%     sgtitle(sprintf('%s, %s unit # %d',animal,pen,unit)) % label the plot with the animal, penetration, and unit shown
+%     figure
+    sgtitle(sprintf('%s, %s unit # %d',animal,pen,unit)) % label the plot with the animal, penetration, and unit shown
 
     unitSpikes = Y(Y(:,3)==unit,:); % get spikes for just this unit
 
@@ -58,12 +58,23 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
 
         %%%%%%%%%%%%%%%%%%%%% plot the PTSH %%%%%%%%%%%%%%%%%%%%%%%%%
 
-%         h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
-%         h.mainLine.Annotation.LegendInformation.IconDisplayStyle = 'off';
-%         h.edge(1).Annotation.LegendInformation.IconDisplayStyle = 'off';
-%         h.edge(2).Annotation.LegendInformation.IconDisplayStyle = 'off';
-%         hold on
-        errorbar(1:17,meanSpikes,ste(nSpikes),'color',colors(ss,:));
+%         if strcmp('low',stims{ss})
+%             h = shadedErrorBar(3:17,meanSpikes(3:end),ste(nSpikes(:,3:end)),{'Color',colors(ss,:)},1);
+%         else
+%             h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
+%         end
+
+        if length(stims)==2 && ss == 2
+            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(3,:)},1);
+        else
+            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
+        end
+
+        h.mainLine.Annotation.LegendInformation.IconDisplayStyle = 'off';
+        h.edge(1).Annotation.LegendInformation.IconDisplayStyle = 'off';
+        h.edge(2).Annotation.LegendInformation.IconDisplayStyle = 'off';
+        hold on
+%         errorbar(1:17,meanSpikes,ste(nSpikes),'color',colors(ss,:));
         hold on
         
         % if this unit is frequency sensitive to this sound type
@@ -81,7 +92,7 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
 
     end
 
-    legend(stims)
+%     legend(stims)
     
     return
 end
