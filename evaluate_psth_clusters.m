@@ -52,7 +52,7 @@ for ap = 1:length(Animals)
             win_end = windows(ww,2);
 
             [r,c] = find(unitSpikes(:,2) > win_start & unitSpikes(:,2) <= win_end);
-            trials_with_spikes = unique(Y(r,6));
+            trials_with_spikes = unique(unitSpikes(r,6));
 
             for tt = 1:nTrials
 
@@ -98,13 +98,14 @@ NoahUnits = all_unit_psth(penLabels<9,:);
 
 for nu = 1:length(NoahUnits)
 
-    postStim100 = NoahUnits(nu,30:39);
+    postStim200 = NoahUnits(nu,31:50);
     replacement100 = NoahUnits(nu,40:49);
-    NoahUnits(nu,20:29) = postStim100;
-    NoahUnits(nu,30:39) = replacement100;
+    NoahUnits(nu,21:40) = postStim200;
+%     NoahUnits(nu,30:39) = replacement100;
 end
 
 all_unit_psth(penLabels<9,:) = NoahUnits;
+all_unit_psth(:,41:end) = [];
 
 %% Normalize and cluster the resulting matrix
 

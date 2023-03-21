@@ -45,7 +45,7 @@ for ap = 1:length(Animals)
 
         % for each stim type
        for ss = 1:length(stims)
-    
+
             spike_counts = zeros(length(repeats),length(Flist)); % initialize space to save the number of spikes evoked
     
             % for each F0
