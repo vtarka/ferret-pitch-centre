@@ -2,7 +2,7 @@
 % Window 1: (0 60] 
 % Window 2: (60 150]
 % Window 3: (200 300] (unless Noah, then (300 400])
-% DEPENDENCIES: 
+% DEPENDENCIES: plot_tuning_by_cond.m (if plot_yn == 'y')
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
 Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...

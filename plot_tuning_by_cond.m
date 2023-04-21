@@ -92,7 +92,7 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
 
     end
 
-%     legend(stims)
+    legend(stims)
     
     return
 end

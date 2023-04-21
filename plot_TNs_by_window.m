@@ -177,7 +177,7 @@ for pen = 1:length(TN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
 
-    stims = {'high','alt','rand'};
+    stims = {'F0MaskHigh','alt','rand','high'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
@@ -211,14 +211,14 @@ for pen = 1:length(TN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
 
-    stims = {'high','alt','rand'};
+    stims = {'high','alt','rand','tone'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
 
     TNUnits = TN_units{pen,3};
 
-    window = [0.06 0.15];
+    window = [0.08 0.16];
 
     for uu = 1:size(TNUnits,1)
 
@@ -244,7 +244,7 @@ for pen = 1:length(TN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
 
-    stims = {'high','alt','rand'};
+    stims = {'high','alt','rand','tone'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
@@ -284,7 +284,7 @@ for pen = 1:length(TN_units)
     
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' TN_units{pen,1} '/tmp02/Spikes_' TN_units{pen,1} '_' TN_units{pen,2} '_Good_Pitch.mat']);
 
-    stims = {'high','alt','rand'};
+    stims = {'F0MaskHigh','alt','rand','high'};
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     allUnits = unique(Y(:,3));
