@@ -4,6 +4,10 @@
 
 function sensitivity = estimate_phase_shift_sensitivity(phase_tuning)
 
+% INPUTS:
+% phase_tuning: 3 x 17 matrix where each row is the tuning curve for
+%        1) high harmonics, 2) alt phase, and 3) rand phase
+
 % Find the lag at which the correlation between no shift and alt shift is highest
 [r_alt,lags_alt] = xcorr(phase_tuning(1,:),phase_tuning(2,:));
 [~,max_r_idx] = max(r_alt);

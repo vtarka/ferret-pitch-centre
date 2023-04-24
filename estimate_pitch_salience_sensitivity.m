@@ -1,5 +1,5 @@
 %% Function to measure how sensitive a neuron is to pitch salience by assessing the click train tuning
-% DEPENDENCIES: 
+% DEPENDENCIES: polyfit
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
 function sensitivity = estimate_pitch_salience_sensitivity(CT_tuning,binary_flag,binary_threshold)
@@ -35,16 +35,14 @@ window(window>17) = [];
 
 % for each CT stimulus, compare the area under the curve to that of CT0
 for ct = 1:size(CT_tuning,1)
-
     diffs(ct) = trapz(CT0(window)) - trapz(CT_tuning(ct,window));
-    
 end
 
 % fit a line through these points
 p = polyfit(1:4,diffs(2:5),1);
 
 if binary_flag % if we want binary, apply the threshold and return
-    if p(1) > threshold
+    if p(1) > binary_threshold
         sensitivity = 1;
     else
         sensitivity = 0;

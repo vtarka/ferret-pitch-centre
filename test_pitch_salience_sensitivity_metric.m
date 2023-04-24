@@ -3,7 +3,7 @@
 
 
 
-load('TNs_fNoah')
+load('TNs_all100')
 units_by_rec = TN_units;
 
 stims = {'CT0','CT5','CT10','CT20','CT40'};
@@ -28,17 +28,19 @@ for pen = 1:length(units_by_rec)
         unitSpikes = Y(Y(:,3)==unit,:); % get spikes for just this unit
         profile = zeros(length(stims),17);
 
-        if units(uu,2)==1
-            window = [0 0.06];
-        elseif units(uu,2)==2
-            window = [0.06 0.15];
-        else
-            if pen<9
-                window = [.3 .4];
-            else
-                window = [.2 .3];
-            end
-        end
+%         if units(uu,2)==1
+%             window = [0 0.06];
+%         elseif units(uu,2)==2
+%             window = [0.06 0.15];
+%         else
+%             if pen<9
+%                 window = [.3 .4];
+%             else
+%                 window = [.2 .3];
+%             end
+%         end
+
+        window = [0 0.06];
 
          % go through each stim we want to plot
         for ss = 1:length(stims)
@@ -73,7 +75,7 @@ for pen = 1:length(units_by_rec)
 
         end % ends stim loop
 
-        pitch_sensitivity(unit_counter) = estimate_pitch_sensitivity(profile);
+        pitch_sensitivity(unit_counter) = estimate_pitch_salience_sensitivity(profile,0);
         CT_profiles(unit_counter,:,:) = profile;
 
         unit_counter = unit_counter + 1;
@@ -97,54 +99,54 @@ end
 
 
 
-function sensitivity = estimate_pitch_sensitivity(CT_tuning)
+% function sensitivity = estimate_pitch_sensitivity(CT_tuning)
+% 
+% % CT_tuning should be 5 x 17 where each row is the tuning curve for one of
+% % the CT stimuli IN ORDER so that CT_tuning(1,:) = tuning for CT0,
+% % CT_tuning(2,:) = tuning for CT5, etc up to CT40
+% 
+% % max_spike_rate = max(max(CT_tuning));
+% % CT_tuning = CT_tuning / max_spike_rate;
+% 
+% CT_tuning = zscore(CT_tuning,0,'all');
+% 
+% diffs = zeros(size(CT_tuning,1)-1,1);
+% CT0 = CT_tuning(1,:);
+% 
+% [~,I] = max(CT0);
+% window = I-4:I+4;
+% window(window<1) = [];
+% window(window>17) = [];
+% 
+% for ct = 1:size(CT_tuning,1)
+% 
+%     diffs(ct) = trapz(CT0(window)) - trapz(CT_tuning(ct,window));
+% %     diffs(ct) = mean(CT0(window) - CT_tuning(ct,window));
+%     
+% end
+% 
+% p = polyfit(1:4,diffs(2:5),1);
+% 
+% % if p(1) > 0.5
+% %     sensitivity = 1;
+% % else
+% %     sensitivity = 0;
+% % end
+% 
+% sensitivity = p(1);
 
-% CT_tuning should be 5 x 17 where each row is the tuning curve for one of
-% the CT stimuli IN ORDER so that CT_tuning(1,:) = tuning for CT0,
-% CT_tuning(2,:) = tuning for CT5, etc up to CT40
-
-% max_spike_rate = max(max(CT_tuning));
-% CT_tuning = CT_tuning / max_spike_rate;
-
-CT_tuning = zscore(CT_tuning,0,'all');
-
-diffs = zeros(size(CT_tuning,1)-1,1);
-CT0 = CT_tuning(1,:);
-
-[~,I] = max(CT0);
-window = I-4:I+4;
-window(window<1) = [];
-window(window>17) = [];
-
-for ct = 1:size(CT_tuning,1)
-
-    diffs(ct) = trapz(CT0(window)) - trapz(CT_tuning(ct,window));
-%     diffs(ct) = mean(CT0(window) - CT_tuning(ct,window));
-    
-end
-
-p = polyfit(1:4,diffs(2:5),1);
-
-% if p(1) > 0.5
-%     sensitivity = 1;
-% else
-%     sensitivity = 0;
 % end
 
-sensitivity = p(1);
-
-end
-
-
-function nUnits = count_units(unit_list)
-
-nUnits = 0;
-for pen = 1:length(unit_list)
-
-    nUnits = nUnits + size(unit_list{pen,3},1);
-end
-
-end
+% 
+% function nUnits = count_units(unit_list)
+% 
+% nUnits = 0;
+% for pen = 1:length(unit_list)
+% 
+%     nUnits = nUnits + size(unit_list{pen,3},1);
+% end
+% 
+% end
 
 % function sensitivity = estimate_pitch_sensitivity(CT_tuning)
 % 

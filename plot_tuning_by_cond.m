@@ -13,6 +13,8 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
     % BFs - length(stims) x 1 with the input unit's best frequencies for each of the sound types listed in 'stims'
     % animal - string, animal this unit came from
     % pen - string, penetration this unit came from
+    % window - vector with two elements: window(1) is the start of the response window, window(2) is the end (in ms) (OPTIONAL)
+    % colors - nStims x 3 matrix, each row holds an RGB triplet of the color for that stimulus (OPTIONAL)
 
     Flist = unique(F0);
     repeats = unique(Y(:,5));

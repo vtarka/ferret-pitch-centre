@@ -1,7 +1,7 @@
 %% Plot phase shift tuning ordered by phase shift sensitivity to test given metric
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-load('TNs_fNoah')
+load('TNs_all100')
 units_by_rec = TN_units;
 
 stims = {'high','alt','rand','F0MaskHigh','tone'};
@@ -18,11 +18,11 @@ for pen = 1:length(units_by_rec)
     load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/tmp02/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
 
     units = units_by_rec{pen,3};
-
-    if ~isempty(units)
-        units(units(:,2)==3,:) = [];
-        units = unique(units(:,1));
-    end
+% 
+%     if ~isempty(units)
+%         units(units(:,2)==3,:) = [];
+%         units = unique(units(:,1));
+%     end
 
     Flist = unique(F0);
     repeats = unique(Y(:,5));
@@ -46,7 +46,7 @@ for pen = 1:length(units_by_rec)
 %             end
 %         end
 
-        window = [0 0.06];
+        window = [0 0.1];
          % go through each stim we want to plot
         for ss = 1:length(stims)
     
@@ -72,7 +72,7 @@ for pen = 1:length(units_by_rec)
     
             nSpikes = nSpikes ./ diff(window); % spikes per second
             meanSpikes = mean(nSpikes); % average across repeats
-            profile(ss,:) = meanSpikes;
+            profile(ss,:) = (meanSpikes);
 
             if strcmp('low',stims{ss})
                 profile(ss,1:2) = nan;
@@ -108,6 +108,7 @@ for uu = 1:nUnits
     
 end
 
+%%
 figure;
 specialUs = [6 8 11 15 48 51 52];
 for uu = 1:length(specialUs)
@@ -194,46 +195,46 @@ set(gca,'fontsize',24)
 % end
 
 
-function sensitivity = estimate_phase_shift_sensitivity(phase_tuning)
-
-[r_alt,lags_alt] = xcorr(phase_tuning(1,:),phase_tuning(2,:));
-[~,max_r_idx] = max(r_alt);
-best_lag_alt = lags_alt(max_r_idx);
-
-[r_rand,lags_rand] = xcorr(phase_tuning(1,:),phase_tuning(3,:));
-[~,max_r_idx] = max(r_rand);
-best_lag_rand = lags_rand(max_r_idx);
-
-zscored_tuning = zscore(phase_tuning,0,'all');
-rand_zscored_tuning = zscored_tuning(3,:);
-
-
-if best_lag_alt > 0 && (max(rand_zscored_tuning) < 0.5 || best_lag_rand > 0)
-    sensitivity = 1;
-else
-    sensitivity = 0;
-end
-
-
-% if max(rand_zscored_tuning)<0.5 
-%     if best_lag_alt>0
-%         sensitivity = 1;
-%     else
-%         sensitivity = 0;
-%     end
-% else 
-%     if best_lag_rand > 0
-%         if best_lag_alt > 0
-%             sensitivity = 1;
-%         else
-%             sensitivity = -1;
-%         end
-%     else
-%         sensitivity = -1;
-%     end
+% function sensitivity = estimate_phase_shift_sensitivity(phase_tuning)
+% 
+% [r_alt,lags_alt] = xcorr(phase_tuning(1,:),phase_tuning(2,:));
+% [~,max_r_idx] = max(r_alt);
+% best_lag_alt = lags_alt(max_r_idx);
+% 
+% [r_rand,lags_rand] = xcorr(phase_tuning(1,:),phase_tuning(3,:));
+% [~,max_r_idx] = max(r_rand);
+% best_lag_rand = lags_rand(max_r_idx);
+% 
+% zscored_tuning = zscore(phase_tuning,0,'all');
+% rand_zscored_tuning = zscored_tuning(3,:);
+% 
+% 
+% if best_lag_alt > 0 && (max(rand_zscored_tuning) < 0.5 || best_lag_rand > 0)
+%     sensitivity = 1;
+% else
+%     sensitivity = 0;
 % end
-
-end
+% 
+% 
+% % if max(rand_zscored_tuning)<0.5 
+% %     if best_lag_alt>0
+% %         sensitivity = 1;
+% %     else
+% %         sensitivity = 0;
+% %     end
+% % else 
+% %     if best_lag_rand > 0
+% %         if best_lag_alt > 0
+% %             sensitivity = 1;
+% %         else
+% %             sensitivity = -1;
+% %         end
+% %     else
+% %         sensitivity = -1;
+% %     end
+% % end
+% 
+% end
 
 
 % function nUnits = count_units(unit_list)
@@ -245,21 +246,6 @@ end
 % end
 % 
 % end
-
-function nUnits = count_units(unit_list)
-
-nUnits = 0;
-for pen = 1:length(unit_list)
-
-    pen_units = unit_list{pen,3};
-
-    if ~isempty(pen_units)
-        pen_units(pen_units(:,2)==3,:) = [];
-        nUnits = nUnits + length(unique(pen_units(:,1)));
-    end
-        
-end
-end
 
 
 % function sensitivity = estimate_pitch_sensitivity(CT_tuning)
