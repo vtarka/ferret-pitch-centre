@@ -27,7 +27,7 @@ diffs = zeros(size(CT_tuning,1)-1,1); % allocate space to save the difference be
 CT0 = CT_tuning(1,:); % extract just the tuning curve for 0 jitter
 
 [~,I] = max(CT0); % find the best frequency (pitch evoking the maximum spike rate)
-window = I-4:I+4; % look in the window surrounding the best frequency 
+window = I-1:I+1; % look in the window surrounding the best frequency 
 
 % eliminate pitches outside our stim protocol
 window(window<1) = []; 
@@ -39,7 +39,9 @@ for ct = 1:size(CT_tuning,1)
 end
 
 % fit a line through these points
-p = polyfit(1:4,diffs(2:5),1);
+% p = polyfit(1:4,diffs(2:5),1);
+
+[p,xFit,yFit] = get_sigmoidal_fit_slope(1:4,diffs(2:5));
 
 if binary_flag % if we want binary, apply the threshold and return
     if p(1) > binary_threshold
@@ -48,6 +50,26 @@ if binary_flag % if we want binary, apply the threshold and return
         sensitivity = 0;
     end
 else % else, directly return the slope of the line as the metric
-    sensitivity = p(1);
+%     sensitivity = p(1);
+      sensitivity = p;
 end
+
+% clf;
+% colors = colormap(hsv(size(CT_tuning,1)));
+% subplot(1,2,1)
+% for ss = 1:size(CT_tuning,1)
+%     hold on;
+%     plot(1:17,CT_tuning(ss,:),'Color',colors(ss,:),'linewidth',1.5)
+% end
+% axis tight
+% xticks([])
+% yticks([])
+% 
+% subplot(1,2,2)
+% plot(xFit,yFit,'b','linewidth',2)
+% hold on
+% plot(1:4,diffs(2:5),'k.','MarkerSize',50)
+% 
+% pause
+
 end

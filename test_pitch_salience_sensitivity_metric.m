@@ -1,10 +1,10 @@
 %% Plot click train tuning ordered by pitch salience to test given metric
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-
-
-load('TNs_all100')
-units_by_rec = TN_units;
+mat_struct = load('HNs_99.mat');
+mat_cell = struct2cell(mat_struct);
+units_by_rec = mat_cell{1};
+clear mat_struct mat_cell
 
 stims = {'CT0','CT5','CT10','CT20','CT40'};
 
@@ -40,7 +40,7 @@ for pen = 1:length(units_by_rec)
 %             end
 %         end
 
-        window = [0 0.06];
+        window = [0 .1];
 
          % go through each stim we want to plot
         for ss = 1:length(stims)
@@ -93,90 +93,6 @@ for uu = 1:nUnits
     end
     axis tight
     xticks([])
-    yticks([])
+%     yticks([])
     title(sprintf('%.2f',B(uu)))
 end
-
-
-
-% function sensitivity = estimate_pitch_sensitivity(CT_tuning)
-% 
-% % CT_tuning should be 5 x 17 where each row is the tuning curve for one of
-% % the CT stimuli IN ORDER so that CT_tuning(1,:) = tuning for CT0,
-% % CT_tuning(2,:) = tuning for CT5, etc up to CT40
-% 
-% % max_spike_rate = max(max(CT_tuning));
-% % CT_tuning = CT_tuning / max_spike_rate;
-% 
-% CT_tuning = zscore(CT_tuning,0,'all');
-% 
-% diffs = zeros(size(CT_tuning,1)-1,1);
-% CT0 = CT_tuning(1,:);
-% 
-% [~,I] = max(CT0);
-% window = I-4:I+4;
-% window(window<1) = [];
-% window(window>17) = [];
-% 
-% for ct = 1:size(CT_tuning,1)
-% 
-%     diffs(ct) = trapz(CT0(window)) - trapz(CT_tuning(ct,window));
-% %     diffs(ct) = mean(CT0(window) - CT_tuning(ct,window));
-%     
-% end
-% 
-% p = polyfit(1:4,diffs(2:5),1);
-% 
-% % if p(1) > 0.5
-% %     sensitivity = 1;
-% % else
-% %     sensitivity = 0;
-% % end
-% 
-% sensitivity = p(1);
-
-% end
-
-% 
-% function nUnits = count_units(unit_list)
-% 
-% nUnits = 0;
-% for pen = 1:length(unit_list)
-% 
-%     nUnits = nUnits + size(unit_list{pen,3},1);
-% end
-% 
-% end
-
-% function sensitivity = estimate_pitch_sensitivity(CT_tuning)
-% 
-% % CT_tuning should be 5 x 17 where each row is the tuning curve for one of
-% % the CT stimuli IN ORDER so that CT_tuning(1,:) = tuning for CT0,
-% % CT_tuning(2,:) = tuning for CT5, etc up to CT40
-% 
-% % max_spike_rate = max(max(CT_tuning));
-% % CT_tuning = CT_tuning / max_spike_rate;
-% 
-% CT_tuning = zscore(CT_tuning,0,'all');
-% 
-% diffs = zeros(size(CT_tuning,1)-1,1);
-% CT0 = CT_tuning(1,:);
-% 
-% [~,I] = max(CT0);
-% window = I-4:I+4;
-% window(window<1) = [];
-% window(window>17) = [];
-% 
-% for ct = 2:size(CT_tuning,1)
-% 
-%     diff = trapz(CT_tuning(ct-1,window)) - trapz(CT_tuning(ct,window));
-%     diffs(ct) = diff;
-% %     diffs(ct) = (diff / (trapz(CT_tuning(ct-1,window))+trapz(CT_tuning(ct,window)))/2) * 100;
-%     
-% end
-% 
-% % p = polyfit(1:4,diffs(2:5),1);
-% % sensitivity = p(1);
-% 
-% sensitivity = mean(diffs);
-% end

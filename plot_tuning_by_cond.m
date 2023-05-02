@@ -66,12 +66,13 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
 %             h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
 %         end
 
-        if length(stims)==2 && ss == 2
-            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(3,:)},1);
-        else
-            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
-        end
+%         if length(stims)==2 && ss == 2
+%             h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(3,:)},1);
+%         else
+%             h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
+%         end
 
+        h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
         h.mainLine.Annotation.LegendInformation.IconDisplayStyle = 'off';
         h.edge(1).Annotation.LegendInformation.IconDisplayStyle = 'off';
         h.edge(2).Annotation.LegendInformation.IconDisplayStyle = 'off';

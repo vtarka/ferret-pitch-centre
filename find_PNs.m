@@ -16,7 +16,7 @@ loc_counts = [];
 % % location list:    low A1      high A1    low AAF     high AAF    PPF
 % %                      1          2           3            4        5
 
-plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
+plot_yn = 'y'; % y = include plots of the unit's tuning, n = skip the plots
 
 shuffle_tuning_yn = 'y'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
 null_percentile_threshold = 99; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
@@ -36,7 +36,7 @@ window = [0 0.1];
 % for each recording
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/p05/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     units = unique(Y(:,3));
