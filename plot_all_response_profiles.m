@@ -3,11 +3,11 @@
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
 
-mat_struct = load('TNs_01_99.mat');
+mat_struct = load('HNs_05_99.mat');
 mat_cell = struct2cell(mat_struct);
 units_by_rec = mat_cell{1};
 
-stims = {'CT0','CT5','CT10','allHarm','high'};
+stims = {'CT0','CT5','CT10','allHarm','low'};
 
 window = [0 0.1]; % in seconds
 

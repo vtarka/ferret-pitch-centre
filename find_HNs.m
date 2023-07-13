@@ -16,7 +16,7 @@ loc_counts = [];
 % % location list:    low A1      high A1    low AAF     high AAF    PPF
 % %                      1          2           3            4        5
 
-plot_yn = 'y'; % y = include plots of the unit's tuning, n = skip the plots
+plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 figure;
 
 shuffle_tuning_yn = 'y'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
@@ -29,8 +29,8 @@ nNullRuns = 1000; % specify how many times to shuffle the tuning to get the null
 totalHN_count = 0;
 HN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 
-stims_for_profile = {'CT0','CT5','CT10','allHarm','low'};
-stims_to_plot = {'CT0','low','high'};
+stims_for_profile = {'tone','CT5','CT10','allHarm','low'};
+stims_to_plot = {'tone','low','high'};
 
 window = [0 0.1]; % in ms
 
@@ -44,7 +44,7 @@ for ap = 1:length(Animals)
 
     high_stim_num = find(strcmp(stims,'high'));
     low_stim_num = find(strcmp(stims,'low'));
-    CT0_stim_num = 1; % it's always 1
+    CT0_stim_num = find(strcmp(stims,'tone')); % it's always 1
 
     HN_unit_list = []; % to keep track of HNs we find
     for uu = 1:length(units) % for each unit

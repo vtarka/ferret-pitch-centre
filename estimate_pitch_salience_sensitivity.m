@@ -14,7 +14,7 @@ function sensitivity = estimate_pitch_salience_sensitivity(CT_tuning,binary_flag
 %       if we are returning a binary sensitivity estimate (optional)
 
 if ~exist('binary_flag','var') % if this wasn't passed, assume a continuous returned value
-    binary_threshold = 0;
+    binary_flag = 0;
 end
 
 if ~exist('binary_threshold','var') % this wasn't passed, assume a middle of the road threshold
@@ -27,7 +27,7 @@ diffs = zeros(size(CT_tuning,1)-1,1); % allocate space to save the difference be
 CT0 = CT_tuning(1,:); % extract just the tuning curve for 0 jitter
 
 [~,I] = max(CT0); % find the best frequency (pitch evoking the maximum spike rate)
-window = I-1:I+1; % look in the window surrounding the best frequency 
+window = I-4:I+4; % look in the window surrounding the best frequency 
 
 % eliminate pitches outside our stim protocol
 window(window<1) = []; 
@@ -35,13 +35,13 @@ window(window>17) = [];
 
 % for each CT stimulus, compare the area under the curve to that of CT0
 for ct = 1:size(CT_tuning,1)
-    diffs(ct) = trapz(CT0(window)) - trapz(CT_tuning(ct,window));
+    diffs(ct) = (trapz(CT0(window)) - trapz(CT_tuning(ct,window))); %/trapz(CT0(window));
 end
 
 % fit a line through these points
-% p = polyfit(1:4,diffs(2:5),1);
+p = polyfit(1:4,diffs(2:5),1);
 
-[p,xFit,yFit] = get_sigmoidal_fit_slope(1:4,diffs(2:5));
+% [p,xFit,yFit] = get_sigmoidal_fit_slope(1:4,diffs(2:5));
 
 if binary_flag % if we want binary, apply the threshold and return
     if p(1) > binary_threshold
@@ -50,8 +50,8 @@ if binary_flag % if we want binary, apply the threshold and return
         sensitivity = 0;
     end
 else % else, directly return the slope of the line as the metric
-%     sensitivity = p(1);
-      sensitivity = p;
+    sensitivity = p(1);
+%       sensitivity = p;
 end
 
 % clf;

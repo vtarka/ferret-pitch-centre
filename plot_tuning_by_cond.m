@@ -2,7 +2,7 @@
 % DEPENDENCIES: shadedErrorBar.m
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, November 2022
 
-function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colors)
+function ymax = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colors)
 
     % INPUTS:
     % Y - n x 6 matrix where Y(:,)=spiketimes, Y(:,3)=unit spiking, Y(:,4)=stimulus, Y(:,5)=repeat, Y(:,6)=trial number
@@ -52,7 +52,7 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
                 spikeIDXs = unitSpikes(:,4)==stimNum & unitSpikes(:,5)==repeats(rr) & unitSpikes(:,2)>window(1) & unitSpikes(:,2)<window(2);
                 nSpikes(rr,ff) = sum(spikeIDXs);
 
-            end   
+            end 
         end
 
         nSpikes = nSpikes ./ diff(window); % spikes per second
@@ -90,12 +90,12 @@ function a = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,colo
         xticklabels(num2str(Flist))
         xlabel('F0')
         ylabel('Evoked Firing Rate (spike/sec)'); % y axis label is the firing rate
-        set(gca,'fontsize',22)
+%         set(gca,'fontsize',22)
         axis tight
 
     end
 
-    legend(stims)
+%     legend(stims)
     
     return
 end
