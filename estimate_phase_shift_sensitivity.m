@@ -23,7 +23,7 @@ rand_zscored_tuning = zscored_tuning(3,:);
 
 % if the alt phase tuning is shifted towards lower frequencies, AND
 % the rand phase tuning is either flat OR also shifted, it is sensitive
-if best_lag_alt > 0 && (max(rand_zscored_tuning) < 0.5 || best_lag_rand > 0)
+if best_lag_alt > 1 %% && (max(rand_zscored_tuning) < 0.5 || best_lag_rand > 0)
     sensitivity = 1;
 else
     sensitivity = 0;

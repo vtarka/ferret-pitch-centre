@@ -28,15 +28,15 @@ nNullRuns = 1000; % specify how many times to shuffle the tuning to get the null
 totalPN_count = 0;
 PN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 
-stims_for_profile = {'CT0','CT5','CT10','allHarm','high','low'};
-stims_to_plot = {'CT0','low','high'};
+stims_for_profile = {'tone','CT5','CT10','allHarm','high','low'};
+stims_to_plot = {'tone','low','high'};
 
 window = [0 0.1];
 
 % for each recording
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/p05/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     units = unique(Y(:,3));
@@ -47,7 +47,7 @@ for ap = 1:length(Animals)
 
         high_stim_num = find(strcmp(stims,'high'));
         low_stim_num = find(strcmp(stims,'low'));
-        CT0_stim_num = 1; % it's always 1
+        CT0_stim_num = find(strcmp(stims,'tone')); % it's always 1
 
         % if the unit is F0-sensitive to CT0 and high
         if sensitivity(uu,high_stim_num) && sensitivity(uu,low_stim_num) && sensitivity(uu,CT0_stim_num)

@@ -17,6 +17,7 @@ loc_counts = [];
 % %                      1          2           3            4        5
 
 plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
+figure;
 
 shuffle_tuning_yn = 'y'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
 null_percentile_threshold = 99; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
@@ -28,22 +29,22 @@ nNullRuns = 1000; % specify how many times to shuffle the tuning to get the null
 totalHN_count = 0;
 HN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 
-stims_for_profile = {'CT0','CT5','CT10','allHarm','low'};
-stims_to_plot = {'CT0','low','high'};
+stims_for_profile = {'tone','CT5','CT10','allHarm','low'};
+stims_to_plot = {'tone','low','high'};
 
 window = [0 0.1]; % in ms
 
 % for each recording
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/p05/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     units = unique(Y(:,3));
 
     high_stim_num = find(strcmp(stims,'high'));
     low_stim_num = find(strcmp(stims,'low'));
-    CT0_stim_num = 1; % it's always 1
+    CT0_stim_num = find(strcmp(stims,'tone')); % it's always 1
 
     HN_unit_list = []; % to keep track of HNs we find
     for uu = 1:length(units) % for each unit
@@ -55,6 +56,8 @@ for ap = 1:length(Animals)
             if strcmp(shuffle_tuning_yn,'y')
 
                 profile = get_response_profile(Y,type,F0,unit,stims_for_profile,window);
+
+                profile = profile(:,3:17); % eliminate the first two frequencies because they weren't presented for low
 
                 real_corr = get_avg_pairwise_corr(profile);
 
@@ -87,6 +90,11 @@ for ap = 1:length(Animals)
          
                         pause
                     end  
+                else
+                    nexttile;
+                    imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
+                    xticks([])
+                    yticks([])
                 end
             else
 
@@ -113,26 +121,4 @@ for ap = 1:length(Animals)
 
 end % ends recording loop
 
-
-
-function c = get_avg_pairwise_corr(tuning)
-
-% INPUTS:
-% tuning - nStims x 17 matrix where each row is the z-scored averaged tuning curve for that stimulus
-
-nStims = size(tuning,1);
-corrs = zeros(nchoosek(nStims,2),1);
-
-corr_counter = 1;
-for i = 1:nStims
-    for k = 1:nStims
-
-        if i<k
-            corrs(corr_counter) = corr(tuning(i,:)',tuning(k,:)','rows','complete');
-            corr_counter = corr_counter + 1;
-        end
-    end
-end
-
-c = mean(corrs,'omitnan');
-end
+sgtitle('Discarded Units')

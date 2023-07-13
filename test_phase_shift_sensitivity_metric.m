@@ -1,7 +1,7 @@
 %% Plot phase shift tuning ordered by phase shift sensitivity to test given metric
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-load('TNs_all100')
+load('TNs_05_99')
 units_by_rec = TN_units;
 
 stims = {'high','alt','rand','F0MaskHigh','tone'};

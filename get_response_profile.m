@@ -46,7 +46,9 @@ for ss = 1:length(stims_for_profile)
 
     nSpikes = nSpikes ./ diff(window); % spikes per second
     meanSpikes = mean(nSpikes); % average across repeats
-    profile(ss,:) = zscore(meanSpikes); % save the z-scored tuning curve to the profile
+    z_spikes = zscore(meanSpikes);
+    norm_z_spikes = (z_spikes - min(z_spikes)) / (max(z_spikes) - min(z_spikes));
+    profile(ss,:) = z_spikes; % save the z-scored tuning curve to the profile
 
     % the first two pitches were not presented for the low harmonics 
     if strcmp('low',stims_for_profile{ss}) || strcmp('F0MaskLow',stims_for_profile{ss})
