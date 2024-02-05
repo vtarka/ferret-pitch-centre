@@ -5,6 +5,7 @@ deprecated/
 unfinishedAnalyses/
 
 *.mat
+*.fig
 
 plot_corr_comparison.m
 plot_corrs.m
