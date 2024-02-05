@@ -1,7 +1,7 @@
 %% Plot phase shift tuning ordered by phase shift sensitivity to test given metric
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-load('TNs_05_99')
+load('TNs_05_99_3.mat')
 units_by_rec = TN_units;
 
 stims = {'high','alt','rand','F0MaskHigh','tone'};
@@ -80,7 +80,7 @@ for pen = 1:length(units_by_rec)
 
         end % ends stim loop
 
-        phase_sensitivity(unit_counter) = estimate_phase_shift_sensitivity(profile(1:3,:));
+        phase_sensitivity(unit_counter) = estimate_phase_shift_sensitivity_allHarm(profile(1:3,:));
         phase_profiles(unit_counter,:,:) = profile;
         loc_list(unit_counter) = locs(pen);
 
@@ -90,6 +90,7 @@ end
 
 [B,I] = sort(phase_sensitivity);
 c3 = [0 246 148; 34 0 255; 246 164 0; 0 0 0]/255;
+% c3 = [0 0 0; 0 0 1];
 
 figure;
 for uu = 1:nUnits

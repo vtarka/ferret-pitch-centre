@@ -30,27 +30,27 @@ for ap = 1:length(Animals)
 
     if ap < 9
         pre_window = [0.47 0.57];
-%         post_window = [0.3 0.4];
+        post_window = [0.3 0.4];
     else
         pre_window = [0.65 0.75];
-%         post_window = [0.2 0.3];
+        post_window = [0.2 0.3];
     end
 
-    post_window = [0 0.1];
+%     post_window = [0 0.1];
 
     % create variable to save whether each unit is sound responsive
-    responsive = zeros(length(units),1);
+    responsive_by_stim = zeros(length(units),length(stims));
 
     % for each unit
     for uu = 1:length(units)
-
-        pre_onset_spikes = [];
-        post_onset_spikes = [];
 
         unitSpikes = Y(Y(:,3)==units(uu),:); % extract the spikes of just this unit
 
         % for each stim type
         for ss = 1:length(stims)
+
+            pre_onset_spikes = [];
+            post_onset_spikes = [];
 
             % go through each F0 to find BF
             for ff = 1:length(Flist)
@@ -73,31 +73,24 @@ for ap = 1:length(Animals)
                 end % ends repeat loop
 
             end % ends looping through F0s
-                
+
+    
+            if ttest2(pre_onset_spikes,post_onset_spikes,alpha) == 1
+                responsive_by_stim(uu,ss) = 1; % mark this unit as responsive
+            end
+
         end % ends loop through stims
 
-        if ttest2(pre_onset_spikes,post_onset_spikes,alpha) == 1
-            responsive(uu) = 1; % mark this unit as responsive
-            sound_responsive = sound_responsive + 1;
-        else
-            not_sound_responsive = not_sound_responsive + 1;
-        end
-
     end % ends loop through units
-
-    responsive_units_per_pen(ap,1) = length(find(responsive));
-    responsive_units_per_pen(ap,2) = length(units) - length(find(responsive));
 
 %     responsive(responsive==0) = 1;
     % UNCOMMENT BELOW TO SAVE THE BEST FREQUENCY VARIABLE IN THE SPIKING FILE
     save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
-        'Y','type','F0','responsive')
+        'Y','type','F0','responsive_by_stim','responsive')
 
 end % ends loop through recordings
 
-%% Plot how many responsive units per recording
 
-figure;
-bar(responsive_units_per_pen,'stacked')
-xlabel('Penetration')
-ylabel('Units')
+%% plot responsiveness by stimulus
+
+

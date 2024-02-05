@@ -1,17 +1,17 @@
 %% Plot click train tuning ordered by pitch salience to test given metric
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-mat_struct = load('HNs_05_99_3.mat');
+mat_struct = load('TN_units_05_99_2.mat');
 mat_cell = struct2cell(mat_struct);
 units_by_rec = mat_cell{1};
 clear mat_struct mat_cell
 
-stims = {'CT0','CT5','CT10','CT20','CT40'};
+stims = {'high','alt','rand'};
 
 nUnits = count_units(units_by_rec);
 unit_counter = 1;
-pitch_sensitivity = zeros(nUnits,1);
-all_CT_tuning = cell(nUnits,1);
+phase_sensitivity = zeros(nUnits,1);
+all_phase_tuning = cell(nUnits,1);
 
 for pen = 1:length(units_by_rec)
     
@@ -29,7 +29,7 @@ for pen = 1:length(units_by_rec)
         profile = zeros(length(stims),17);
 
         window = [0 .1];
-        CT_tuning = cell(5,1);
+        phase_tuning = cell(length(stims),1);
 
          % go through each stim we want to plot
         for ss = 1:length(stims)
@@ -56,12 +56,16 @@ for pen = 1:length(units_by_rec)
     
             nSpikes = nSpikes ./ diff(window); % spikes per second
             
-            CT_tuning{ss} = nSpikes;
+            phase_tuning{ss} = nSpikes;
+
+            if isempty(phase_tuning{ss})
+                a = 1;
+            end
 
         end % ends stim loop
 
-        pitch_sensitivity(unit_counter) = estimate_pitch_salience_sensitivity_ANOVA(CT_tuning,0.05);
-        all_CT_tuning{unit_counter} = CT_tuning;
+        phase_sensitivity(unit_counter) = estimate_phase_shift_sensitivity_ANOVA(phase_tuning,0.01);
+        all_phase_tuning{unit_counter} = phase_tuning;
 
         unit_counter = unit_counter + 1;
     end
@@ -74,17 +78,17 @@ colors = colormap(hsv(length(stims)));
 figure;
 for uu = 1:nUnits
 
-    if pitch_sensitivity(uu)
-        figure(103);
+    if phase_sensitivity(uu)
+        figure(101);
     else
-        figure(104);
+        figure(102);
     end
 
     nexttile; hold on;
-    CT_tuning = all_CT_tuning{uu};
+    phase_tuning = all_phase_tuning{uu};
 
-    for ss = 1:length(CT_tuning)
-        responses = CT_tuning{ss};
+    for ss = 1:length(phase_tuning)
+        responses = phase_tuning{ss};
         avg_responses = mean(responses);
 
         plot(1:17,avg_responses,'Color',colors(ss,:),'linewidth',1.5)

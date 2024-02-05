@@ -1,4 +1,4 @@
-%% Find pitch neurons by F0-sensitivity to high, low, and CT0
+%% Find harmonicity neurons by F0-sensitivity to high, low, and CT0
 % DEPENDENCIES: plot_tuning_by_cond.m (if plot_yn == 'y')
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
@@ -17,49 +17,47 @@ loc_counts = [];
 % %                      1          2           3            4        5
 
 plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
+figure;
 
-shuffle_tuning_yn = 'y'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
-null_percentile_threshold = 95; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
+shuffle_tuning_yn = 'n'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
+null_percentile_threshold = 99; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
 nNullRuns = 10000; % specify how many times to shuffle the tuning to get the null distribution (only used if shuffle_tuning_yn == 'y')
-nullDistributions = zeros(50,10000);
-uCounter = 1;
 
-% %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
-% %             1       2          3         4        5             6          7                 8           9          10       11       12        13
+% %stimList:         'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
+% %  # (Noah #)       1       2          3         4        5             6            7             8 (10)       9 (11)    10 (12)   11 (13)  12 (14)   13 (15)
 
-totalPN_count = 0;
-total_discarded = 0;
-PN_units = cell(length(Animals),4); % allocate space to save the units we find as harmonicity neurons
+totalORE_count = 0;
+ORE_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
 
-stims_for_profile = {'CT0','CT5','allHarm','high','low'};
-stims_to_plot = {'CT0','low','high'};
+stims_for_profile = {'CT0','CT5','CT10'};
+stims_to_plot = {'CT0','CT5','CT10'};
 
-window = [0 0.1];
+window = [0 0.1]; % in ms
 
 % for each recording
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/final/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     units = unique(Y(:,3));
 
-    PN_unit_list = []; % to keep track of PNs we find
-    discarded_unit_list = [];
+    high_stim_num = find(strcmp(stims,'CT0'));
+    low_stim_num = find(strcmp(stims,'CT5'));
+    CT0_stim_num = find(strcmp(stims,'CT10')); % it's always 1
 
+    ORE_unit_list = []; % to keep track of HNs we find
     for uu = 1:length(units) % for each unit
         unit = units(uu);
 
-        high_stim_num = find(strcmp(stims,'high'));
-        low_stim_num = find(strcmp(stims,'low'));
-        CT0_stim_num = find(strcmp(stims,'CT0')); % it's always 1
-
-        % if the unit is F0-sensitive to CT0 and high
-        if sensitivity(uu,high_stim_num) && sensitivity(uu,low_stim_num) && sensitivity(uu,CT0_stim_num)
+        % if the unit is F0-sensitive to CT0 and low, but not to high, we will call this an HN (or evaluate by shuffling tuning curves as specified)
+        if sensitivity(uu,CT0_stim_num) && sensitivity(uu,high_stim_num) && sensitivity(uu,low_stim_num)
 
             if strcmp(shuffle_tuning_yn,'y')
 
                 profile = get_response_profile(Y,type,F0,unit,stims_for_profile,window);
+
+                profile = profile(:,3:17); % eliminate the first two frequencies because they weren't presented for low
 
                 real_corr = get_avg_pairwise_corr(profile);
 
@@ -80,11 +78,9 @@ for ap = 1:length(Animals)
 
                 % if our real correlation (real tuning alignment) exceeds the threshold in the null distribution
                 if real_corr > null_grand_avg_corr
-                    loc_counts(end+1) = locs(ap); % we've found an PN
-                    totalPN_count = totalPN_count + 1;
-                    PN_unit_list = [PN_unit_list; unit];
-                    nullDistributions(uCounter,:) = shuffled_corrs;
-                    uCounter = uCounter + 1;
+                    loc_counts(end+1) = locs(ap); % we've found an HN
+                    totalORE_count = totalORE_count + 1;
+                    ORE_unit_list = [ORE_unit_list; unit];
 
                     if strcmp(plot_yn,'y')
 
@@ -95,26 +91,23 @@ for ap = 1:length(Animals)
                         pause
                     end 
 
-%                     figure(1);
-%                     nexttile;
-%                     imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
-%                     xticks([])
-%                     yticks([])
+                    figure(1);
+                    nexttile;
+                    imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
+                    xticks([])
+                    yticks([])
                 else
-                    total_discarded = total_discarded + 1;
-%                     figure(2);
-%                     nexttile;
-%                     imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
-%                     xticks([])
-%                     yticks([])
-
-                    discarded_unit_list = [discarded_unit_list; unit];
+                    figure(2);
+                    nexttile;
+                    imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
+                    xticks([])
+                    yticks([])
                 end
             else
 
-                loc_counts(end+1) = locs(ap); % we've found an PN
-                totalPN_count = totalPN_count + 1;
-                PN_unit_list = [PN_unit_list; unit];
+                loc_counts(end+1) = locs(ap); % we've found an HN
+                totalORE_count = totalORE_count + 1;
+                ORE_unit_list = [ORE_unit_list; unit];
 
                 if strcmp(plot_yn,'y')
 
@@ -129,16 +122,11 @@ for ap = 1:length(Animals)
     end % ends the unit loop
 
     % save all the units we found for this penetration
-    PN_units{ap,1} = Animals{ap};
-    PN_units{ap,2} = Pens{ap};
-    PN_units{ap,3} = PN_unit_list;
-    PN_units{ap,4} = discarded_unit_list;
-
-    nullDistributions(totalPN_count+1:end,:) = [];
+    ORE_units{ap,1} = Animals{ap};
+    ORE_units{ap,2} = Pens{ap};
+    ORE_units{ap,3} = ORE_unit_list;
 
 end % ends recording loop
 
 figure(2); sgtitle('Discarded Units')
-figure(1); sgtitle('Pitch Units')
-
-save('PN_units_new_05','PN_units')
+figure(1); sgtitle('Harmonicity Units')

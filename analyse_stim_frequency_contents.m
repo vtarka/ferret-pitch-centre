@@ -1,4 +1,5 @@
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, May 2023
+% Plots the FFT for every stim file in the stim folder specified in variable 'folder'
 
 
 parent_dir = '/media/veronica/Kat Data/Veronica/pitch_ephys/Quentin Pitch ephys/stim2020/70/';

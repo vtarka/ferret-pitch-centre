@@ -1,4 +1,5 @@
-
+% Counts how many TNs, HNs, and PNs, are sensitive to pure tones
+% AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, May 2023
 
 load('HNs_05_99.mat')
 units_by_rec = HN_units;
