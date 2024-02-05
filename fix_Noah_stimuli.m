@@ -102,6 +102,6 @@ for ap = 1:8
     type = new_type;
     F0 = new_F0;
 
-    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],'Y','type','F0','sensitivity')
+    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],'Y','type','F0')
 
 end % ends recording loop

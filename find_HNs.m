@@ -20,33 +20,37 @@ plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 figure;
 
 shuffle_tuning_yn = 'y'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
-null_percentile_threshold = 99; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
-nNullRuns = 1000; % specify how many times to shuffle the tuning to get the null distribution (only used if shuffle_tuning_yn == 'y')
+null_percentile_threshold = 95; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
+nNullRuns = 10000; % specify how many times to shuffle the tuning to get the null distribution (only used if shuffle_tuning_yn == 'y')
+nullDistributions = zeros(50,10000);
+uCounter = 1;
 
 % %stimList:         'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %  # (Noah #)       1       2          3         4        5             6            7             8 (10)       9 (11)    10 (12)   11 (13)  12 (14)   13 (15)
 
 totalHN_count = 0;
-HN_units = cell(length(Animals),3); % allocate space to save the units we find as harmonicity neurons
+HN_units = cell(length(Animals),4); % allocate space to save the units we find as harmonicity neurons
 
-stims_for_profile = {'tone','CT5','CT10','allHarm','low'};
-stims_to_plot = {'tone','low','high'};
+stims_for_profile = {'CT0','CT5','allHarm','low'};
+stims_to_plot = {'CT0','low','high'};
 
 window = [0 0.1]; % in ms
 
 % for each recording
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/p05/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/final/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     units = unique(Y(:,3));
 
     high_stim_num = find(strcmp(stims,'high'));
     low_stim_num = find(strcmp(stims,'low'));
-    CT0_stim_num = find(strcmp(stims,'tone')); % it's always 1
+    CT0_stim_num = find(strcmp(stims,'CT0')); % it's always 1
 
     HN_unit_list = []; % to keep track of HNs we find
+    discarded_unit_list = [];
+
     for uu = 1:length(units) % for each unit
         unit = units(uu);
 
@@ -76,11 +80,14 @@ for ap = 1:length(Animals)
 
                 null_grand_avg_corr = prctile(shuffled_corrs,null_percentile_threshold);
 
+
                 % if our real correlation (real tuning alignment) exceeds the threshold in the null distribution
                 if real_corr > null_grand_avg_corr
                     loc_counts(end+1) = locs(ap); % we've found an HN
                     totalHN_count = totalHN_count + 1;
                     HN_unit_list = [HN_unit_list; unit];
+                    nullDistributions(uCounter,:) = shuffled_corrs;
+                    uCounter = uCounter + 1;
 
                     if strcmp(plot_yn,'y')
 
@@ -89,15 +96,24 @@ for ap = 1:length(Animals)
                         plot_tuning_by_cond(Y,type,F0,unit,stims_to_plot,BFs_to_plot,Animals{ap},Pens{ap},window);
          
                         pause
-                    end  
+                    end 
+% 
+%                     figure(1);
+%                     nexttile;
+%                     imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
+%                     xticks([])
+%                     yticks([])
                 else
-                    nexttile;
-                    imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
-                    xticks([])
-                    yticks([])
+%                     figure(2);
+%                     nexttile;
+%                     imagesc(get_response_profile(Y,type,F0,unit,stims_for_profile,window))
+%                     xticks([])
+%                     yticks([])
+                    discarded_unit_list = [discarded_unit_list; unit];
                 end
-            else
 
+
+            else
                 loc_counts(end+1) = locs(ap); % we've found an HN
                 totalHN_count = totalHN_count + 1;
                 HN_unit_list = [HN_unit_list; unit];
@@ -118,7 +134,12 @@ for ap = 1:length(Animals)
     HN_units{ap,1} = Animals{ap};
     HN_units{ap,2} = Pens{ap};
     HN_units{ap,3} = HN_unit_list;
+    HN_units{ap,4} = discarded_unit_list;
 
+    nullDistributions(totalHN_count+1:end,:) = [];
 end % ends recording loop
 
-sgtitle('Discarded Units')
+figure(2); sgtitle('Discarded Units')
+figure(1); sgtitle('Harmonicity Units')
+
+save('HN_units_new_05','HN_units')
