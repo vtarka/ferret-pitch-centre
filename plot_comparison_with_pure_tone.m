@@ -4,7 +4,7 @@
 
 figure;
 
-file_names = {'HNs_05_99','TNs_05_99','PNs_05_99'};
+file_names = {'HN_units','TN_units','PN_units'};
 
 stims = {'low','high','CT0','tone'};
 

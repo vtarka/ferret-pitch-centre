@@ -13,7 +13,7 @@ CT0 = CT_tuning{1}; % extract just the tuning curve for 0 jitter
 CT0_tuning = mean(CT0);
 
 [~,I] = max(CT0_tuning); % find the best frequency (pitch evoking the maximum spike rate)
-window = I-2:I+2; % look in the window surrounding the best frequency
+window = I-1:I+1; % look in the window surrounding the best frequency
 window(window<1) = [];
 window(window>17) = [];
 nFreqs = length(window);

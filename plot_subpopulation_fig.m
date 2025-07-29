@@ -5,36 +5,39 @@ f = figure;
 f.Position = [2623 706 1002 796];
 
 %% HNs
-% file_name = 'HN_units_new_05';
+% file_name = '0225HNs';
+% null_file = 'HN_nulls';
 % units_to_plot = {{'Noah','P02',568},{'Ronnie','P13',128},{'Noah','P02',683}};
 % fi = 1;
-% stims_to_plot = {'low','F0MaskLow','high','CT0'};
+% stims_to_plot = {'low','high','CT0'};
 % stims_for_profile = {'CT0','low','allHarm','CT5'};
-% rp_labels = {'Click Train','Low Harm.','Missing F0','CT 5% Jitter'};
+% rp_labels = {'click train (CT)','low harm.','missing F0','CT 5% jitter'};
 % ex_Ns = [5, 30, 7];
 % ymax = [40 80 50];
-% colors = [0 0 1; 0 0 1; 1 0 0; 0 0 0];
+% colors = [0 0 1; 1 0 0; 0 0 0];
 % edges = 0.1:0.1:0.9;
 
 %% TNs
-% file_name = 'TN_units_new_05';
+% file_name = '0225TNs';
+% null_file = 'TN_nulls';
 % units_to_plot = {{'Noah','P03',489},{'Noah','P08',233},{'Dory','P01',370}};
-% stims_to_plot = {'high','F0MaskHigh','CT0'};
+% stims_to_plot = {'high','CT0'};
 % stims_for_profile = {'CT0','high','allHarm','CT5'};
-% rp_labels = {'Click Train','High Harm.','Missing F0','CT 5% Jitter'};
+% rp_labels = {'click train (CT)','high harm.','missing F0','CT 5% jitter'};
 % ex_Ns = [4, 15, 30];
 % ymax = [46 80 32];
 % edges = 0.1:0.1:0.9;
 % fi = 2;
-% colors = [1 0 0; 1 0 0; 0 0 0];
+% colors = [1 0 0; 0 0 0];
 
 %% PNs
-file_name = 'PN_units_new_05';
+file_name = '0225PNs';
+null_file = 'PN_nulls';
 units_to_plot = {{'Noah','P03',619},{'Ronnie','P05',473},{'Ronnie','P13',115}}; 
 stims_to_plot = {'low','high','CT0'};
 stims_for_profile = {'CT0','low','high','allHarm','CT5'};
 fi = 3;
-rp_labels = {'Click Train','Low Harm.','High Harm.','Missing F0','CT 5% Jitter'};
+rp_labels = {'click train (CT)','low harm.','high harm.','missing F0','CT 5% jitter'};
 ex_Ns = [3, 22, 25];
 ymax = [40 96 28];
 colors = [0 0 1; 1 0 0; 0 0 0];
@@ -53,7 +56,7 @@ for pen = 1:length(units_to_plot)
 
     this_unit = units_to_plot{pen};
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' this_unit{1} '/tmp02/Spikes_' this_unit{1} '_' this_unit{2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' this_unit{1} '/Batch0324/Spikes_' this_unit{1} '_' this_unit{2} '_Good_Pitch.mat']);
 
     subplot(3,3,pen)
 
@@ -79,7 +82,7 @@ for pen = 1:length(units_to_plot)
         xticklabels(Flist(1:4:17))
         xlabel('F0 (Hz)')
 
-        ylh = ylabel('Firing Rate (spks/s)');
+        ylh = ylabel('firing rate (spks/s)');
 
         set(gca,'fontsize',18)
         set(gca,'fontname','DejaVu Serif')
@@ -130,7 +133,8 @@ end
 %% Plot locations
 
 nUnits = count_units(units_by_rec);
-locs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3];
+% locs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3];
+locs = [1 1 2 1 5 3 5 4 4 1 1 1 1 2 1 1 1 4 2 3];
 loc_list = zeros(nUnits,1);
 unit_counter = 1;
     
@@ -236,7 +240,7 @@ window = [0 0.1];
 unit_counter = 1;
 for pen = 1:length(units_by_rec)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/final/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/Batch0324/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
 
     units = units_by_rec{pen,3};
 
@@ -296,7 +300,7 @@ hold on
 histogram(Cs_passing,'binwidth',0.05,'facecolor','black','facealpha',0.5,'linewidth',2)
 histogram(Cs_discarded,'binwidth',0.05,'facecolor','white','facealpha',0.5,'linewidth',2)
 
-legend({'harmonicity neurons','neurons with insignificant tuning correlation'},'fontsize',14)
+legend({'harmonicity neurons','neurons with non-significant tuning correlation'},'fontsize',14)
 xlabel('average tuning correlation')
 ylabel('# of neurons')
 
@@ -305,7 +309,7 @@ set(gca,'fontsize',20)
 
 %% plot null distributions for example neurons
 
-load('PN_nulls')
+load(null_file)
 figure(1);
 
 % units_to_plot = {{'Noah','P02',568},{'Ronnie','P13',128},{'Noah','P02',683}};
@@ -314,7 +318,7 @@ for i = 1:3
 
     unit_to_plot = units_to_plot{i};
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' unit_to_plot{1} '/final/Spikes_' unit_to_plot{1} '_' unit_to_plot{2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' unit_to_plot{1} '/Batch0324/Spikes_' unit_to_plot{1} '_' unit_to_plot{2} '_Good_Pitch.mat']);
 
     this_unit = unit_to_plot{3};
 
@@ -324,8 +328,8 @@ for i = 1:3
     subplot(3,3,i+6)
     hold on
 
-    xline(prctile(nullDistributions(ex_Ns(i),:),95),'linewidth',5)
-    xline(avg_corr,'linewidth',5,'color','r')
+    xline(prctile(nullDistributions(ex_Ns(i),:),95),'linewidth',5,'linestyle',':','color','k')
+    xline(avg_corr,'linewidth',5,'color','k')
     histogram(nullDistributions(ex_Ns(i),:),'FaceColor','black','facealpha',0.25)
 
     xlim([-0.3 0.8])
@@ -340,7 +344,7 @@ for i = 1:3
     end
 
     if i == 3
-        legend({'95th %ile','actual corr.','null distribution'},'fontsize',10)
+        legend({'95th %ile','observed corr.','null distribution'},'fontsize',10)
     end
 
     xlim([-0.3 0.8])

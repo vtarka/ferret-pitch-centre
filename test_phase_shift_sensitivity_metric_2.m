@@ -1,7 +1,7 @@
 %% Plot click train tuning ordered by pitch salience to test given metric
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-mat_struct = load('TN_units_05_99_2.mat');
+mat_struct = load('TN_units_new_05.mat');
 mat_cell = struct2cell(mat_struct);
 units_by_rec = mat_cell{1};
 clear mat_struct mat_cell
@@ -64,7 +64,7 @@ for pen = 1:length(units_by_rec)
 
         end % ends stim loop
 
-        phase_sensitivity(unit_counter) = estimate_phase_shift_sensitivity_ANOVA(phase_tuning,0.01);
+        phase_sensitivity(unit_counter) = estimate_phase_shift_sensitivity_ANOVA(phase_tuning,0.05);
         all_phase_tuning{unit_counter} = phase_tuning;
 
         unit_counter = unit_counter + 1;

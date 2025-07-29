@@ -2,9 +2,9 @@
 
 %%
 
-file_name = 'HN_units_new_05';
+file_name = '0225HNs';
 
-other_type_file = 'TN_units_new_05';
+other_type_file = '0225TNs';
 
 mat_struct = load(file_name);
 mat_cell = struct2cell(mat_struct);
@@ -20,9 +20,12 @@ window = [0 0.1];
 hn_corrs = [];
 all_corrs = [];
 
+confusion_matrix = zeros(17);
+BF0s = [];
+
 for pen = 1:length(units_by_rec)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/final/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/Batch0324/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
 
     HN_units = units_by_rec{pen,3};
     other_units = other_units_by_rec{pen,3};
@@ -37,6 +40,10 @@ for pen = 1:length(units_by_rec)
         if responsive(uu)
 
             unit = units(uu);
+
+            if ~ismember(unit,HN_units)
+                continue
+            end
     
             unitSpikes = Y(Y(:,3)==unit,:); % get spikes for just this unit
     
@@ -73,6 +80,13 @@ for pen = 1:length(units_by_rec)
     
             if ismember(unit,HN_units)
                 hn_corrs(end+1) = corr(tuning_curves(1,:)',tuning_curves(2,:)');
+
+                [~,I1] = max(tuning_curves(1,:));
+                [~,I2] = max(tuning_curves(2,:));
+                BF0s = [BF0s; [I1 I2]];
+
+                confusion_matrix(I1,I2) = confusion_matrix(I1,I2) + 1;
+
             elseif ~ismember(unit,other_units)
                 all_corrs(end+1) = corr(tuning_curves(1,:)',tuning_curves(2,:)');
             end
@@ -89,12 +103,32 @@ end
 % hn_N = hn_N / length(hn_corrs);
 % all_N = all_N / length(all_corrs);
 
+% figure;
+% hold on
+% histogram(hn_corrs,-1:0.1:1,'normalization','probability','facecolor','red','facealpha',0.3,'LineWidth',2)
+% histogram(all_corrs,-1:0.1:1,'normalization','probability','facecolor','white','facealpha',0.5,'LineWidth',2)
+% 
+% set(gca,'fontsize',24)
+% 
+% legend({'temporal neurons','all other neurons'},'location','northwest')
+% xlabel('masked and unmasked high harmonics tuning corr.')
+% ylabel('% of neurons')
+
+%% offset histograms
+
 figure;
 hold on
-histogram(hn_corrs,-1:0.1:1,'normalization','probability','facecolor','black','facealpha',0.3)
-histogram(all_corrs,-1:0.1:1,'normalization','probability','facecolor','white','facealpha',0.3)
+[HN_N, HN_edges] = histcounts(hn_corrs,-1:0.1:1,'normalization','probability');
+[all_N, all_edges] = histcounts(all_corrs,-1:0.1:1,'normalization','probability');
+
+bar(-0.96:0.1:0.94, HN_N,0.25,'facecolor','blue','linewidth',2)
+bar(-0.93:0.1:0.97, all_N,0.25,'facecolor','white','linewidth',2)
 
 set(gca,'fontsize',24)
+
+xticks(-1:0.5:1)
+
+ylim([0 0.25])
 
 legend({'harmonicity neurons','all other neurons'},'location','northwest')
 xlabel('masked and unmasked low harmonics tuning corr.')

@@ -21,7 +21,7 @@ plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
 shuffle_tuning_yn = 'y'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
 null_percentile_threshold = 95; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
 nNullRuns = 10000; % specify how many times to shuffle the tuning to get the null distribution (only used if shuffle_tuning_yn == 'y')
-nullDistributions = zeros(50,10000);
+nullDistributions = zeros(50,nNullRuns);
 uCounter = 1;
 
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
@@ -39,7 +39,7 @@ window = [0 0.1];
 % for each recording
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/final/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Batch0225/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     units = unique(Y(:,3));
@@ -140,5 +140,6 @@ end % ends recording loop
 
 figure(2); sgtitle('Discarded Units')
 figure(1); sgtitle('Pitch Units')
-
-save('PN_units_new_05','PN_units')
+% 
+% save('PN_units','PN_units')
+% save('PN_nulls','nullDistributions')

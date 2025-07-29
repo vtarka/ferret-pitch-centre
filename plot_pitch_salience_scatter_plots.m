@@ -4,16 +4,13 @@
 
 figure;
 
-file_names = {'HN_units_f2','TN_units_f2','PN_units_f2'};
+file_names = {'0225HNs','0225TNs','0225PNs'};
 
-stims = {'low','high','tone','CT5','CT10','CT20','CT40'};
+stims = {'low','high','CT0'};
 
 plot_titles = {'Harmonicity Neurons','Temporal Neurons','Pitch Neurons'};
 
 window = [0 0.1];
-
-max_sensitivity = 0;
-min_sensitivity = 0;
 
 colors = [0 0 1; 1 0 0; 0 0 0];
 
@@ -25,12 +22,12 @@ for fi = 1:length(file_names) % for each neuronal subtype
     mat_cell = struct2cell(mat_struct);
     units_by_rec = mat_cell{1};
 
-    points = zeros(count_units(units_by_rec),3);
+    points = zeros(count_units(units_by_rec),2);
     unit_counter = 1;
 
     for pen = 1:length(units_by_rec)
             
-        load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/tmp02/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
+        load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/Batch0324/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
 
         units = units_by_rec{pen,3};
         Flist = unique(F0);
@@ -72,55 +69,57 @@ for fi = 1:length(file_names) % for each neuronal subtype
 
                 if strcmp('low',stims{ss})
                     profile(ss,1:2) = nan;
+                    
                 end
 
             end % ends stim loop
 
             points(unit_counter,1) = corr(profile(1,:)',profile(3,:)','rows','complete');
-            points(unit_counter,2) = corr(profile(2,:)',profile(3,:)');
-
-            points(unit_counter,3) = 0; %estimate_pitch_salience_sensitivity(profile(3:end,:));
+            points(unit_counter,2) = corr(profile(2,:)',profile(3,:)','rows','complete');
 
             unit_counter = unit_counter + 1;
 
         end
     end % ends recording loop
     
-    sensitivity = points(:,3);
-    if max(sensitivity) > max_sensitivity
-        max_sensitivity = max(sensitivity);
-    end
+%     sensitivity = points(:,3);
+%     if max(sensitivity) > max_sensitivity
+%         max_sensitivity = max(sensitivity);
+%     end
+% 
+%     if min(sensitivity) < min_sensitivity
+%         min_sensitivity = min(sensitivity);
+%     end
 
-    if min(sensitivity) < min_sensitivity
-        min_sensitivity = min(sensitivity);
-    end
+%     [low_corr_sorted, i] = sort(points(:,1));
+%     sensitivity_sorted = sensitivity(i);
 
-    [low_corr_sorted, i] = sort(points(:,1));
-    sensitivity_sorted = sensitivity(i);
-
-    binned_low_sensitivity = zeros(size(sensitivity_bins,1),1);
-
-    for ii = 1:size(sensitivity_bins,1)
-        corr_in_bin = find(low_corr_sorted > sensitivity_bins(ii,1) & low_corr_sorted < sensitivity_bins(ii,2));
-
-        if ~isempty(corr_in_bin)
-            sensitivity_in_bin = sensitivity_sorted(corr_in_bin);
-            binned_low_sensitivity(ii) = mean(sensitivity_in_bin);
-        else
-            binned_low_sensitivity(ii) = nan;
-        end
-    end
-
-    subplot(1,3,fi)
+%     binned_low_sensitivity = zeros(size(sensitivity_bins,1),1);
+% 
+%     for ii = 1:size(sensitivity_bins,1)
+%         corr_in_bin = find(low_corr_sorted > sensitivity_bins(ii,1) & low_corr_sorted < sensitivity_bins(ii,2));
+% 
+%         if ~isempty(corr_in_bin)
+%             sensitivity_in_bin = sensitivity_sorted(corr_in_bin);
+%             binned_low_sensitivity(ii) = mean(sensitivity_in_bin);
+%         else
+%             binned_low_sensitivity(ii) = nan;
+%         end
+%     end
+% 
+%     subplot(1,3,fi)
 
     if fi==1
 
 %         histogram(points(:,1))
+        figure(4);
         h = histfit(points(:,1));
         X = h(2).XData;
         Y = h(2).YData;
-        Y_norm = (Y-min(Y)) / (max(Y)-min(Y));
-        area(X,Y_norm,'FaceColor',[1 0 0],'EdgeColor',[1 0 0],'linewidth',2,'facealpha',0.2);
+        xlim([-1 1])
+%         Y_norm = (Y-min(Y)) / (max(Y)-min(Y));
+        figure(1); subplot(1,3,fi); hold on
+        area(X,Y,'FaceColor',[1 0 0],'EdgeColor',[1 0 0],'linewidth',2,'facealpha',0.2);
         ax1 = gca;
 %         ax1.DataAspectRatio = [1 1 1];
 %         ax1.YLim = [0 eps];
@@ -131,6 +130,12 @@ for fi = 1:length(file_names) % for each neuronal subtype
         xticks([-1 0 1])
         ax1.DataAspectRatio = [1 20 1];
 
+        figure(120);
+        subplot(4,1,1)
+        histogram(points(:,1),-1:0.1:1,'FaceColor',[0 0 1]);
+        title('Harmonicity Neurons')
+        figure(20)
+
 %           pd = fitdist(points(:,1),'Kernel','Width',0.1);
 %           x = -1:0.01:1;
 %           y = pdf(pd,x);
@@ -138,11 +143,14 @@ for fi = 1:length(file_names) % for each neuronal subtype
 %         histogram(points(:,1),-1:0.05:1)
     elseif fi == 2
 %         
+        figure(5);
         h = histfit(points(:,2));
         X = h(2).XData;
         Y = h(2).YData;
-        Y_norm = (Y-min(Y)) / (max(Y)-min(Y));
-        area(X,Y_norm,'FaceColor',[0 0 1],'EdgeColor',[0 0 1],'linewidth',2,'facealpha',0.2);
+        xlim([-1 1])
+%         Y_norm = (Y-min(Y)) / (max(Y)-min(Y));
+        figure(1); subplot(1,3,fi); hold on        
+        area(X,Y,'FaceColor',[0 0 1],'EdgeColor',[0 0 1],'linewidth',2,'facealpha',0.2);
         ax1 = gca;
 %         ax1.DataAspectRatio = [1 1 1];
 %         ax1.XLim = [0 eps];
@@ -152,6 +160,12 @@ for fi = 1:length(file_names) % for each neuronal subtype
         xticks([-1 0 1])
         ax1.YLim = [0 12];
         ax1.DataAspectRatio = [1 20 1];
+
+        figure(120);
+        subplot(4,1,2)
+        histogram(points(:,2),-1:0.1:1,'FaceColor',[1 0 0]);
+        title('Temporal Neurons')
+        figure(20)
 %         histogram(points(:,2),-1:0.05:1)
 
 %           pd = fitdist(points(:,2),'Kernel','Width',0.1);
@@ -160,7 +174,8 @@ for fi = 1:length(file_names) % for each neuronal subtype
 %           plot(x,y)
     else
 %         scatter(points(:,1),points(:,2),200,'markerfacecolor',"#25523B",'linewidth',2.5,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#77AC30")
-        scatter(points(:,1),points(:,2),200,'markerfacecolor',"#000000",'linewidth',2.5,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#000000")
+        figure(1); subplot(1,3,fi); hold on
+        scatter(points(:,2),points(:,1),200,'markerfacecolor',"#000000",'linewidth',2.5,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#000000")
         xlim([-1 1])
         ylim([-1 1])
         xticks([0 1])
@@ -179,11 +194,11 @@ end % ends file loop
 
 
 %% Pure tone scatter overlaid
-
-file_names = {'HN_units_f2','TN_units_f2','PN_units_f2'};
+figure;
+% file_names = {'HN_units','TN_units','PN_units'};
 % file_names = {'tone_HNs','tone_TNs','tone_PNs'};
 
-stims = {'F0MaskLow','F0MaskHigh','CT0','CT5','CT10','CT20','CT40'};
+stims = {'low','high','tone'};
 
 
 plot_titles = {'Harmonicity Neurons','Temporal Neurons','Pitch Neurons'};
@@ -209,7 +224,7 @@ for fi = 1:length(file_names)
 
     for pen = 1:length(units_by_rec)
             
-        load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/tmp02/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
+        load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/Batch0324/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
 
         units = units_by_rec{pen,3};
         Flist = unique(F0);
@@ -248,14 +263,14 @@ for fi = 1:length(file_names)
                 meanSpikes = mean(nSpikes); % average across repeats
                 profile(ss,:) = meanSpikes;
 
-                if strcmp('F0MaskLow',stims{ss})
+                if strcmp('low',stims{ss})
                     profile(ss,1:2) = nan;
                 end
 
             end % ends stim loop
 
             points(unit_counter,1) = corr(profile(1,:)',profile(3,:)','rows','complete');
-            points(unit_counter,2) = corr(profile(2,:)',profile(3,:)');
+            points(unit_counter,2) = corr(profile(2,:)',profile(3,:)','rows','complete');
 
 %             points(unit_counter,1)
 %             points(unit_counter,2)
@@ -305,13 +320,14 @@ for fi = 1:length(file_names)
 %         scatter(points(:,1),zeros(length(points(:,1)),1),50,'markerfacecolor',"#25523B",'linewidth',1,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#77AC30")
 %         scatter(points(:,1),zeros(length(points(:,1)),1),50,'markerfacecolor',"#0000FF",'linewidth',1,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#0000FF")
 %         histogram(points(:,1))
-        figure(4);
+        figure(7);
         h = histfit(points(:,1));
         X = h(2).XData;
         Y = h(2).YData;
+        xlim([-1 1])
         Y_norm = (Y-min(Y)) / (max(Y)-min(Y));
-        figure(1); subplot(1,3,fi); hold on
-        area(X,Y_norm,'FaceColor',[1 0 0],'EdgeColor',[1 0 0],'linewidth',2,'facealpha',0.1,'linestyle','--');
+        figure(2); subplot(1,3,fi); hold on
+        area(X,Y,'FaceColor',[1 0 0],'EdgeColor',[1 0 0],'linewidth',2,'facealpha',0.1) %,'linestyle','--');
         ax1 = gca;
 
         ax1.Color = 'none';
@@ -320,6 +336,13 @@ for fi = 1:length(file_names)
         ax1.YLim = [0 10];
         xticks([-1 0 1])
         ax1.DataAspectRatio = [1 20 1];
+
+        figure(120);
+        subplot(4,1,3)
+        histogram(points(:,1),-1:0.1:1,'FaceColor',[0 0 1]);
+        title('Harmonicity - Pure Tone')
+        figure(20)
+
 %         pause
 %           subplot(1,3,fi); hold on
 %           pd = fitdist(points(:,1),'Kernel','Width',0.1);
@@ -331,13 +354,14 @@ for fi = 1:length(file_names)
     elseif fi == 2
 %         scatter(zeros(length(points(:,2)),1),points(:,2),50,'markerfacecolor',"#25523B",'linewidth',1,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#77AC30")
 %         scatter(zeros(length(points(:,2)),1),points(:,2),50,'markerfacecolor',"#FF0000",'linewidth',1,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#FF0000")
-        figure(4);
+        figure(8);
         h = histfit(points(:,2));
         X = h(2).XData;
         Y = h(2).YData;
+        xlim([-1 1])
         Y_norm = (Y-min(Y)) / (max(Y)-min(Y));
-        figure(1); subplot(1,3,fi); hold on
-        area(X,Y_norm,'FaceColor',[0 0 1],'EdgeColor',[0 0 1],'linewidth',2,'facealpha',0.1,'linestyle','--');
+        figure(2); subplot(1,3,fi); hold on
+        area(X,Y,'FaceColor',[0 0 1],'EdgeColor',[0 0 1],'linewidth',2,'facealpha',0.1); %,'linestyle','--');
         ax1 = gca;
 %         ax1.DataAspectRatio = [1 1 1];
 %         ax1.XLim = [0 eps];
@@ -347,6 +371,12 @@ for fi = 1:length(file_names)
         xticks([-1 0 1])
         ax1.YLim = [0 12];
         ax1.DataAspectRatio = [1 20 1];
+
+        figure(120);
+        subplot(4,1,4)
+        histogram(points(:,2),-1:0.1:1,'FaceColor',[1 0 0]);
+        title('Temporal - Pure Tone')
+        figure(20)
 %         histogram(points(:,2),-1:0.05:1)
 
 %           subplot(1,3,fi); hold on
@@ -357,9 +387,9 @@ for fi = 1:length(file_names)
     else
 %         scatter(points(:,1),points(:,2),200,'markerfacecolor',"#25523B",'linewidth',2.5,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#77AC30")
 %         figure(2);
-        figure(1);
+        figure(2);
         subplot(1,3,fi); hold on
-        scatter(points(:,1),points(:,2),200,'markerfacecolor',"#000000",'linewidth',2.5,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#000000",'marker','*')
+        scatter(points(:,2),points(:,1),200,'markerfacecolor',"#000000",'linewidth',2.5,'MarkerFaceAlpha',0.2,'MarkerEdgeColor',"#000000")
         xlim([-1 1])
         ylim([-1 1])
         xticks([0 1])
@@ -386,12 +416,12 @@ end % ends file loop
 %     patch(vertices(:,1),vertices(:,2),'k','FaceAlpha',0.06,'EdgeColor','none')
 % 
 % %     clim([-max_sensitivity max_sensitivity])
-% % 
-% %     if fi == 1
-% %         xlabel('CT and low harmonics tuning corr.')
-% %         ylabel('CT and high harmonics tuning corr.')
-% %     elseif fi == 3
-% % %         cb = colorbar;
-% % %         cb.Position = cb.Position + [0.02 0 0 0];
-% %     end
+% 
+%     if fi == 1
+%         xlabel('CT and low harmonics tuning corr.')
+%         ylabel('CT and high harmonics tuning corr.')
+%     elseif fi == 3
+% %         cb = colorbar;
+% %         cb.Position = cb.Position + [0.02 0 0 0];
+%     end
 % end

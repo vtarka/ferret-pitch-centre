@@ -1,7 +1,7 @@
 
 figure; 
 
-file_name = 'TN_units_f2';
+file_name = 'TN_units';
 units_to_plot = {{'Noah','P03',634},{'Noah','P08',237},{'Noah','P08',221},{'Ronnie','P05',306}}; 
 stims_to_plot = {'high','alt','rand'};
 % stims_for_profile = {'low','high','allHarm','CT0','CT5','CT10'};

@@ -1,14 +1,18 @@
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, May 2023
 
-Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
-    'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
-    'Dory','Dory','Dory','Dory'};
+% Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
+%     'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
+%     'Dory','Dory','Dory','Dory'};
+% 
+% Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
+%     'P04','P05','P08','P13','P02','P03','P05','P08',...
+%     'P00','P01','P02','P04'};
+% 
+% Qualia = 'Good';
 
-Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
-    'P04','P05','P08','P13','P02','P03','P05','P08',...
-    'P00','P01','P02','P04'};
-
-Qualia = 'Good';
+Animals = {'Linguine','Linguine','Linguine','Linguine','Linguine','Linguine'};
+Pens = {'P2C1','P2C1','P2C2','P2C2','P3C2','P3C2'};
+Qualia = {'good','MUA','good','MUA','good','MUA'};
 
 % %stimList: 'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
 % %             1       2          3         4        5             6          7                 8           9          10       11       12        13
@@ -21,22 +25,23 @@ responsive_units_per_pen = zeros(length(Animals),2);
 
 for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Spikes_' Animals{ap} '_' Pens{ap} '_' Qualia{ap} '_Pitch.mat']);
 
     stims = unique(type); 
     Flist = unique(F0);
     repeats = unique(Y(:,5));
     units = unique(Y(:,3));
 
-    if ap < 9
-        pre_window = [0.47 0.57];
-%         post_window = [0.3 0.4];
-    else
-        pre_window = [0.65 0.75];
-%         post_window = [0.2 0.3];
-    end
+%     if ap < 9
+%         pre_window = [0.47 0.57];
+% %         post_window = [0.3 0.4];
+%     else
+%         pre_window = [0.65 0.75];
+% %         post_window = [0.2 0.3];
+%     end
 
-    post_window = [0 0.1];
+    pre_window = [-0.05 0];
+    post_window = [0 0.05];
 
     % create variable to save whether each unit is sound responsive
     responsive = zeros(length(units),1);
@@ -76,7 +81,7 @@ for ap = 1:length(Animals)
                 
         end % ends loop through stims
 
-        if ttest2(pre_onset_spikes,post_onset_spikes,alpha) == 1
+        if ttest(pre_onset_spikes,post_onset_spikes,alpha) == 1
             responsive(uu) = 1; % mark this unit as responsive
             sound_responsive = sound_responsive + 1;
         else
@@ -90,7 +95,7 @@ for ap = 1:length(Animals)
 
 %     responsive(responsive==0) = 1;
     % UNCOMMENT BELOW TO SAVE THE BEST FREQUENCY VARIABLE IN THE SPIKING FILE
-    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Spikes_' Animals{ap} '_' Pens{ap} '_' Qualia{ap} '_Pitch.mat'],...
         'Y','type','F0','responsive')
 
 end % ends loop through recordings

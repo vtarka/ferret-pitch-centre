@@ -97,11 +97,11 @@ Qualia = 'Good';
 % for each recording
 for ap = 1:8
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Batch0225/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     type = new_type;
     F0 = new_F0;
 
-    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/tmp02/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],'Y','type','F0')
+    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Batch0225/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],'Y','type','F0')
 
 end % ends recording loop

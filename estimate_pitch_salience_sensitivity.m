@@ -27,7 +27,7 @@ diffs = zeros(size(CT_tuning,1)-1,1); % allocate space to save the difference be
 CT0 = CT_tuning(1,:); % extract just the tuning curve for 0 jitter
 
 [~,I] = max(CT0); % find the best frequency (pitch evoking the maximum spike rate)
-window = I-4:I+4; % look in the window surrounding the best frequency 
+window = I-1:I+1; % look in the window surrounding the best frequency 
 
 % eliminate pitches outside our stim protocol
 window(window<1) = []; 

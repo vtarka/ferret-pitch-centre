@@ -1,7 +1,7 @@
 %% Plot click train tuning ordered by pitch salience to test given metric
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-mat_struct = load('HNs_05_99_3.mat');
+mat_struct = load('0225TNs.mat');
 mat_cell = struct2cell(mat_struct);
 units_by_rec = mat_cell{1};
 clear mat_struct mat_cell
@@ -11,11 +11,17 @@ stims = {'CT0','CT5','CT10','CT20','CT40'};
 nUnits = count_units(units_by_rec);
 unit_counter = 1;
 pitch_sensitivity = zeros(nUnits,1);
+sensitive_locations = zeros(5,1);
+
 all_CT_tuning = cell(nUnits,1);
+
+locs = [1 1 2 1 5 3 5 4 4 1 1 1 1 2 1 1 1 4 2 3];
 
 for pen = 1:length(units_by_rec)
     
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/final/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
+    n_sensitive = 0;
+
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' units_by_rec{pen,1} '/Batch0225/Spikes_' units_by_rec{pen,1} '_' units_by_rec{pen,2} '_Good_Pitch.mat']);
 
     units = units_by_rec{pen,3};
     Flist = unique(F0);
@@ -61,10 +67,16 @@ for pen = 1:length(units_by_rec)
         end % ends stim loop
 
         pitch_sensitivity(unit_counter) = estimate_pitch_salience_sensitivity_ANOVA(CT_tuning,0.05);
+
+        if pitch_sensitivity(unit_counter)
+            n_sensitive = n_sensitive + 1;
+        end
         all_CT_tuning{unit_counter} = CT_tuning;
 
         unit_counter = unit_counter + 1;
     end
+
+    sensitive_locations(locs(pen)) = sensitive_locations(locs(pen))+ n_sensitive;
 end
 
 %%

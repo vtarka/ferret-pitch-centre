@@ -2,13 +2,17 @@
 % DEPENDENCIES: plot_tuning_by_cond.m (if plot_yn == 'y')
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, March 2023
 
-Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
-    'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
-    'Dory','Dory','Dory','Dory'};
+% Animals = {'Noah','Noah','Noah','Noah','Noah','Noah','Noah','Noah',...
+%     'Ronnie','Ronnie','Ronnie','Ronnie','Derry','Derry','Derry','Derry',...
+%     'Dory','Dory','Dory','Dory'};
+% 
+% Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
+%     'P04','P05','P08','P13','P02','P03','P05','P08',...
+%     'P00','P01','P02','P04'};
 
-Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
-    'P04','P05','P08','P13','P02','P03','P05','P08',...
-    'P00','P01','P02','P04'};
+Animals = {'Linguine','Linguine','Linguine','Linguine','Linguine','Linguine'};
+Pens = {'P2C1','P2C1','P2C2','P2C2','P3C2','P3C2'};
+Qualia = {'good','MUA','good','MUA','good','MUA'};
 
 locs = [1 1 2 1 5 3 5 4 3 3 1 2 3 2 1 1 1 3 4 3]; % a list of locations by penetration (aligns with Animals and Pens variables)
 loc_counts = [];
@@ -16,13 +20,13 @@ loc_counts = [];
 % % location list:    low A1      high A1    low AAF     high AAF    PPF
 % %                      1          2           3            4        5
 
-plot_yn = 'n'; % y = include plots of the unit's tuning, n = skip the plots
+plot_yn = 'y'; % y = include plots of the unit's tuning, n = skip the plots
 figure;
 
 shuffle_tuning_yn = 'y'; % y = shuffle the tuning profiles to see if the unit is more aligned than random chance, n = skip this
 null_percentile_threshold = 95; % specify which percentile of the null distribution to use as the threshold for significant tuning alignment (only used if shuffle_tuning_yn == 'y')
 nNullRuns = 10000; % specify how many times to shuffle the tuning to get the null distribution (only used if shuffle_tuning_yn == 'y')
-nullDistributions = zeros(50,10000);
+nullDistributions = zeros(50,nNullRuns);
 uCounter = 1;
 
 % %stimList:         'CT0'    'CT10'    'CT20'    'CT40'    'CT5'    'F0MaskHigh'    'F0MaskLow'    'allHarm'      'alt'     'high'    'low'    'rand'    'tone'
@@ -37,12 +41,14 @@ stims_to_plot = {'CT0','low','high'};
 window = [0 0.1]; % in ms
 
 % for each recording
-for ap = 1:length(Animals)
+for ap = 1:3 %length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/final/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Spikes_' Animals{ap} '_' Pens{ap} '_' Qualia{ap} '_Pitch.mat'])
 
     stims = unique(type);
     units = unique(Y(:,3));
+
+    sensitivity(isnan(sensitivity)) = 0;
 
     high_stim_num = find(strcmp(stims,'high'));
     low_stim_num = find(strcmp(stims,'low'));
@@ -137,9 +143,11 @@ for ap = 1:length(Animals)
     HN_units{ap,4} = discarded_unit_list;
 
     nullDistributions(totalHN_count+1:end,:) = [];
+
 end % ends recording loop
 
 figure(2); sgtitle('Discarded Units')
 figure(1); sgtitle('Harmonicity Units')
 
-save('HN_units_new_05','HN_units')
+% save('HN_units','HN_units')
+% save('HN_nulls','nullDistributions')
