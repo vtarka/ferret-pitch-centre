@@ -13,10 +13,6 @@ Pens = {'P01','P02','P03','P04','P05','P06','P07','P08',...
 
 Qualia = 'Good';
 
-Animals = {'Linguine','Linguine','Linguine','Linguine','Linguine','Linguine'};
-Pens = {'P2C1','P2C1','P2C2','P2C2','P3C2','P3C2'};
-Qualia = {'good','MUA','good','MUA','good','MUA'};
-
 p_threshold = 0.05; % significance threshold for unit to be considered F0-sensitive
 plot_yn = 'n'; % y = include plots of every stimulus the unit is F0-sensitive to, n = skip the plots
 
@@ -28,12 +24,11 @@ uCounter = 1;
 
 window = [0 0.1]; % windows in seconds to evaluate F0 sensitivity
 
-CT0_sensitive = 0;
 
 % for each recording
-for ap = 2 %1:3 %length(Animals)
+for ap = 1:length(Animals)
 
-    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Spikes_' Animals{ap} '_' Pens{ap} '_' 'Good' '_Pitch.mat']);
+    load(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Batch0324/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat']);
 
     stims = unique(type);
     Flist = unique(F0);
@@ -60,6 +55,8 @@ for ap = 2 %1:3 %length(Animals)
         responses = zeros(length(repeats)*length(Flist)*length(stims),1);
         response_labels_f0 = zeros(length(repeats)*length(Flist)*length(stims),1);
         response_labels_stim = zeros(length(repeats)*length(Flist)*length(stims),1);
+
+        p_values = zeros(length(stims),1);
 
         idx = 1;
         % for each stim type
@@ -118,11 +115,17 @@ for ap = 2 %1:3 %length(Animals)
                 found_sensitive = 1;
             end 
 
+            p_values(ss) = p;
+
         end % ends the stim loop  
 
-        if sensitivity(uu,1) == 1
-            CT0_sensitive = CT0_sensitive + 1;
-        end
+        % correct for multiple testing with FDR
+
+%         FDR = mafdr(p_values,'BHFDR','true');
+
+        [h,crit_p] = fdr_bh(p_values,0.05,'pdep','no');
+
+        sensitivity(uu,:) = h;
 
         if found_sensitive == 0 
             not_sensitive_u(end+1) = uCounter;
@@ -165,8 +168,8 @@ for ap = 2 %1:3 %length(Animals)
     end % ends the unit loop
 
     % UNCOMMENT BELOW TO SAVE THE SENSITIVITY VARIABLE IN THE SPIKING FILE
-%     save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} 'Spikes_' Animals{ap} '_' Pens{ap} '_' Qualia{ap} '_Pitch.mat'],...
-%        'Y','type','F0','sensitivity','responsive')
+    save(['/media/veronica/Kat Data/Veronica/pitch_ephys/DansMATLABData/' Animals{ap} '/Batch0324/Spikes_' Animals{ap} '_' Pens{ap} '_Good_Pitch.mat'],...
+       'Y','type','F0','sensitivity','responsive')
 
 end % ends the file-loading loop
 

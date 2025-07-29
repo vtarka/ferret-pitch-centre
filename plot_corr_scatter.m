@@ -2,7 +2,7 @@
 % DEPENDENCIES:
 % AUTHOR: Veronica Tarka, veronica.tarka@dpag.ox.ac.uk, April 2023
 
-files = {'HNs_fNoah','TNs_fNoah','PNs_fNoah'};
+files = {'HN_units','TN_units','PN_units'};
 plot_titles = {'Harmonicity Neurons','Temporal Neurons','Pitch Neurons'};
 
 binary_yn = 'n'; % set this to y if you want the pitch sensitivity to be shown as either yes or no, rather than a continuous metric

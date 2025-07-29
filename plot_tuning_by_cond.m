@@ -56,7 +56,10 @@ function ymax = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,c
         end
 
         nSpikes = nSpikes ./ diff(window); % spikes per second
-        meanSpikes = mean(nSpikes); % average across repeats
+        nSpikes = zscore(nSpikes,0,'all');
+        meanSpikes = zscore(mean(nSpikes)); % average across repeats
+
+%         spike_error = ste(nSpikes);
 
         %%%%%%%%%%%%%%%%%%%%% plot the PTSH %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -64,12 +67,12 @@ function ymax = plot_tuning_by_cond(Y,type,F0,unit,stims,BFs,animal,pen,window,c
             if contains(stims{ss},'Mask')
                 h = shadedErrorBar(3:17,meanSpikes(3:end),ste(nSpikes(:,3:end)),{'Color',colors(ss,:),'linestyle','--'},1);
             else
-                h = shadedErrorBar(3:17,meanSpikes(3:end),ste(nSpikes(:,3:end)),{'Color',colors(ss,:)},1);
+                h = shadedErrorBar(3:17,meanSpikes(3:end),ste(nSpikes(:,3:end)),{'Color',colors(ss,:),'linewidth',3},1);
             end
-        elseif contains(stims{ss},'Mask')
-            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:),'linestyle','--'},1);
+        elseif contains(stims{ss},'tone')
+            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:),'linestyle','--','linewidth',3},1);
         else
-            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:)},1);
+            h = shadedErrorBar(1:17,meanSpikes,ste(nSpikes),{'Color',colors(ss,:),'linewidth',3},1);
         end
 
 %         if length(stims)==2 && ss == 2

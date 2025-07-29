@@ -3,7 +3,10 @@ Figs/
 OldMats/
 deprecated/
 unfinishedAnalyses/
+preprocessing/
+unfinishedAnalyses/
 
+*.zip
 *.mat
 *.fig
 

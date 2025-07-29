@@ -16,9 +16,9 @@ for ss = 1:length(stims)
 %     end
 
     if ss == 1
-        color = 'b';
+        color = 'k';
     elseif ss == 2
-        color = 'r';
+        color = 'k';
     else
         color = 'k';
     end
